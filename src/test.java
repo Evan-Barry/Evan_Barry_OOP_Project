@@ -3,7 +3,11 @@ public class test {
 
         Deck deck = new Deck();
 
-        //System.out.println(deck.toString());
+        System.out.println(deck.toString());
+
+        deck.shuffle(deck.getCards());
+
+        System.out.println(deck.toString());
 
         GUI window = new GUI();
         window.setVisible(true);
