@@ -1,24 +1,26 @@
+import javax.swing.*;
+
 public class Card {
 
-    private Suit suit;
-    private Value value;
+    private String suit;
+    private String value;
 
-    public Suit getSuit()
+    public String getSuit()
     {
         return suit;
     }
 
-    public Value getValue()
+    public String getValue()
     {
         return value;
     }
 
-    public void setSuit(Suit suit)
+    public void setSuit(String suit)
     {
         this.suit = suit;
     }
 
-    public void setValue(Value value)
+    public void setValue(String value)
     {
         this.value = value;
     }
@@ -28,59 +30,59 @@ public class Card {
         switch (suit)
         {
             case 0:
-                setSuit(Suit.Clubs);
+                setSuit("Clubs");
                 break;
             case 1:
-                setSuit(Suit.Spades);
+                setSuit("Spades");
                 break;
             case 2:
-                setSuit(Suit.Hearts);
+                setSuit("Hearts");
                 break;
             case 3:
-                setSuit(Suit.Diamonds);
+                setSuit("Diamonds");
                 break;
         }
 
         switch (value)
         {
             case 0:
-                setValue(Value.Ace);
+                setValue("Ace");
                 break;
             case 1:
-                setValue(Value.Two);
+                setValue("Two");
                 break;
             case 2:
-                setValue(Value.Three);
+                setValue("Three");
                 break;
             case 3:
-                setValue(Value.Four);
+                setValue("Four");
                 break;
             case 4:
-                setValue(Value.Five);
+                setValue("Five");
                 break;
             case 5:
-                setValue(Value.Six);
+                setValue("Six");
                 break;
             case 6:
-                setValue(Value.Seven);
+                setValue("Seven");
                 break;
             case 7:
-                setValue(Value.Eight);
+                setValue("Eight");
                 break;
             case 8:
-                setValue(Value.Nine);
+                setValue("Nine");
                 break;
             case 9:
-                setValue(Value.Ten);
+                setValue("Ten");
                 break;
             case 10:
-                setValue(Value.Jack);
+                setValue("Jack");
                 break;
             case 11:
-                setValue(Value.Queen);
+                setValue("Queen");
                 break;
             case 12:
-                setValue(Value.King);
+                setValue("King");
                 break;
 
         }
