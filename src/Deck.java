@@ -54,9 +54,9 @@ public class Deck {
         setShuffled(false);
         cards = new Card[getAvailableCards()];
 
-        for(int i = 0; i < Suit.values().length; i++)
+        for(int i = 0; i < 4; i++)
         {
-            for(int j = 0; j < Value.values().length; j++)
+            for(int j = 0; j < 13; j++)
             {
                 cards[currentAmountOfCards++] = new Card(i,j);
                 //System.out.println(cards[currentAmountOfCards].getValue() + " " + cards[currentAmountOfCards].getSuit());

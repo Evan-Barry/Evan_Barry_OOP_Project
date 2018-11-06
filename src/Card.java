@@ -1,5 +1,3 @@
-import javax.swing.*;
-
 public class Card {
 
     private String suit;

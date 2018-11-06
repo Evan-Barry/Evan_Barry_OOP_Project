@@ -59,6 +59,17 @@ public class GUI extends JFrame {
             else if(e.getSource() == pokerButton)
             {
                 clearButtons();
+
+                ImageIcon image;
+                JLabel imageLabel;
+                String cardName = "";
+
+
+
+                image = new ImageIcon("C:\\Users\\t00202376\\Desktop\\" + cardName + ".png");
+                imageLabel = new JLabel(image);
+                imageLabel.setVisible(true);
+                add(imageLabel);
             }
 
             else if(e.getSource() == blackjackButton)
