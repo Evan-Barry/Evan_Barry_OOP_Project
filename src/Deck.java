@@ -2,7 +2,8 @@ import java.util.Random;
 
 public class Deck {
 
-    private Card cards[];
+    private Card[] cards;
+    private Card c;
     private int availableCards;
     private int currentAmountOfCards;
     private boolean shuffled;
@@ -27,6 +28,11 @@ public class Deck {
         return shuffled;
     }
 
+    public Card getC()
+    {
+        return c;
+    }
+
     public void setAvailableCards(int availableCards)
     {
         this.availableCards = availableCards;
@@ -47,19 +53,27 @@ public class Deck {
         this.shuffled = shuffled;
     }
 
-    public Deck()
+    public void setC(Card c)
     {
-        setAvailableCards(52);
+        this.c = c;
+    }
+
+    public Deck(int numberOfDecks)
+    {
+        setAvailableCards(52 * numberOfDecks);
         setCurrentAmountOfCards(0);
         setShuffled(false);
         cards = new Card[getAvailableCards()];
 
-        for(int i = 0; i < 4; i++)
+        for(int x = 0; x < numberOfDecks; x++)
         {
-            for(int j = 0; j < 13; j++)
+            for(int i = 0; i < 4; i++)
             {
-                cards[currentAmountOfCards++] = new Card(i,j);
-                //System.out.println(cards[currentAmountOfCards].getValue() + " " + cards[currentAmountOfCards].getSuit());
+                for(int j = 0; j < 13; j++)
+                {
+                    cards[currentAmountOfCards++] = new Card(i,j);
+                    //System.out.println(cards[currentAmountOfCards].getValue() + " " + cards[currentAmountOfCards].getSuit());
+                }
             }
         }
     }

@@ -59,22 +59,37 @@ public class GUI extends JFrame {
             else if(e.getSource() == pokerButton)
             {
                 clearButtons();
-
-                ImageIcon image;
-                JLabel imageLabel;
-                String cardName = "";
-
-
-
-                image = new ImageIcon("C:\\Users\\t00202376\\Desktop\\" + cardName + ".png");
-                imageLabel = new JLabel(image);
-                imageLabel.setVisible(true);
-                add(imageLabel);
             }
 
             else if(e.getSource() == blackjackButton)
             {
                 clearButtons();
+//                blackjack
+
+//                Card c = new Card(3,12);
+//
+//                ImageIcon image;
+//                JLabel imageLabel;
+//                String cardName = c.getValue() + c.getSuit();
+//
+//
+//
+//                image = new ImageIcon("C:\\Users\\t00202376\\Desktop\\" + cardName + ".png");
+//                imageLabel = new JLabel(image);
+//                imageLabel.setVisible(true);
+//                add(imageLabel);
+
+                String name = JOptionPane.showInputDialog("What is your name?");
+                Human h1 = new Human(name);
+
+                int numberOfDecks = Integer.parseInt(JOptionPane.showInputDialog("How many decks do you want to play with?"));
+                Deck d1 = new Deck(numberOfDecks);
+
+                System.out.println(d1.toString());
+
+                d1.shuffle(d1.getCards());
+
+                System.out.println(d1.toString());
             }
 
             else if(e.getSource() == goFishButton)
