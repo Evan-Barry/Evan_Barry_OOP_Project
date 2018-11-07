@@ -2,6 +2,8 @@ public class Blackjack {
 
     private int numberOfDecks;
 
+    private boolean gameOver;
+
     public int getNumberOfDecks()
     {
         return numberOfDecks;
@@ -10,6 +12,16 @@ public class Blackjack {
     public void setNumberOfDecks(int numberOfDecks)
     {
         this.numberOfDecks = numberOfDecks;
+    }
+
+    public boolean isGameOver()
+    {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean gameOver)
+    {
+        this.gameOver = gameOver;
     }
 
     public Blackjack(int numOfDecks)

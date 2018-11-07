@@ -28,10 +28,8 @@ public class Deck {
         return shuffled;
     }
 
-    public Card getC(int i)
+    public Card getC()
     {
-        c = cards[i];
-
         return c;
     }
 

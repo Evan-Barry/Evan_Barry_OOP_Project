@@ -9,19 +9,69 @@ public class GUI extends JFrame implements ActionListener{
     JMenu gameMenu;
     JLabel message;
     Container cPane;
+    JPanel topPanel, bottomPanel;
+    JPanel t1, t2, t3, b1, b2, b3;
     Dimension screenSize;
+    JLabel imageLabel;
 
     public GUI()
     {
         setTitle("Blackjack");
         screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setSize((int)screenSize.getWidth()/2, (int)screenSize.getHeight()/2);
-        setLocation((int)screenSize.getWidth()/4,(int)screenSize.getHeight()/4);
+        setSize((int)screenSize.getWidth(), (int)screenSize.getHeight());
         setResizable(false);
 
         cPane = getContentPane();
-        cPane.setLayout(new GridLayout());
+        cPane.setLayout(new GridLayout(2,1));
         cPane.setBackground(new Color(39,119,20));
+
+
+        topPanel = new JPanel();
+        bottomPanel = new JPanel();
+
+        topPanel.setSize((int)screenSize.getWidth(), (int)screenSize.getHeight()/2);
+        bottomPanel.setSize((int)screenSize.getWidth(), (int)screenSize.getHeight()/2);
+
+        topPanel.setLocation(0,0);
+        bottomPanel.setLocation(0, (int)screenSize.getHeight()/2);
+
+        cPane.add(topPanel);
+        cPane.add(bottomPanel);
+
+        topPanel.setLayout(new GridLayout(1,3));
+        bottomPanel.setLayout(new GridLayout(1,3));
+
+        t1 = new JPanel();
+        t2 = new JPanel();
+        t3 = new JPanel();
+
+//        t1.setSize((int)screenSize.getWidth()/3, (int)screenSize.getHeight()/2);
+//        t2.setSize((int)screenSize.getWidth()/3, (int)screenSize.getHeight()/2);
+//        t3.setSize((int)screenSize.getWidth()/3, (int)screenSize.getHeight()/2);
+
+        t1.setBackground(cPane.getBackground());
+        t2.setBackground(cPane.getBackground());
+        t3.setBackground(cPane.getBackground());
+
+        topPanel.add(t1);
+        topPanel.add(t2);
+        topPanel.add(t3);
+
+        b1 = new JPanel();
+        b2 = new JPanel();
+        b3 = new JPanel();
+
+//        b1.setSize((int)screenSize.getWidth()/3, (int)screenSize.getHeight()/2);
+//        b2.setSize((int)screenSize.getWidth()/3, (int)screenSize.getHeight()/2);
+//        b3.setSize((int)screenSize.getWidth()/3, (int)screenSize.getHeight()/2);
+
+        b1.setBackground(cPane.getBackground());
+        b2.setBackground(cPane.getBackground());
+        b3.setBackground(cPane.getBackground());
+
+        bottomPanel.add(b1);
+        bottomPanel.add(b2);
+        bottomPanel.add(b3);
 
         createGameMenu();
 
@@ -33,7 +83,7 @@ public class GUI extends JFrame implements ActionListener{
         message.setFont(new Font("SansSerif",Font.PLAIN,30));
         message.setHorizontalAlignment(JLabel.CENTER);
         message.setVerticalAlignment((JLabel.TOP));
-        cPane.add(message);
+        t2.add(message);
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -53,7 +103,7 @@ public class GUI extends JFrame implements ActionListener{
         {
             Deck d = setUpGame();
             d.shuffle();
-            //displayHands(d);
+            displayHands(d);
         }
 
 //
@@ -116,27 +166,41 @@ public class GUI extends JFrame implements ActionListener{
         int numberOfDecks = Integer.parseInt(JOptionPane.showInputDialog("How many decks do you want to play with? (1(Easy) - 4(Very Hard))"));
         Deck deck = new Deck(numberOfDecks);
 
-        message.setText("\t\t" + h1.getName());
-        screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        message.setHorizontalAlignment(JLabel.LEFT);
-        message.setVerticalAlignment((JLabel.BOTTOM));
-        cPane = getContentPane();
-        cPane.add(message);
+        message.setText("Dealer");
+        message.setHorizontalAlignment((JLabel.CENTER));
+        message.setVerticalAlignment(((JLabel.CENTER)));
+        t1.add(message);
+
+        message.setText(h1.getName());
+        message.setHorizontalAlignment(JLabel.CENTER);
+        message.setVerticalAlignment((JLabel.CENTER));
+        b1.add(message);
+
+        repaint();
 
         Blackjack b1 = new Blackjack(numberOfDecks);
 
         return deck;
     }
 
-//    private void displayHands(Deck d)
-//    {
-//        Card c = new Card(0,0);
-//
-//        for(int i = 0; i < 2; i++)
-//        {
-//            d.getC(i);
-//            System.out.println(c.toString());
-//        }
-//    }
+    private void displayHands(Deck d)
+    {
+        //System.out.println(d.toString());
+
+        Card[] cardArray = d.getCards();
+
+        ImageIcon image;
+        for(int i = 0; i < 2; i++)
+        {
+            String cardName = cardArray[i].getValue() + cardArray[i].getSuit();
+
+            image = new ImageIcon("resources/" + cardName + ".png");
+            imageLabel = new JLabel(image);
+            imageLabel.setVisible(true);
+            imageLabel.setHorizontalAlignment(JLabel.LEFT );
+            b2.add(imageLabel);
+        }
+
+    }
 
 }
