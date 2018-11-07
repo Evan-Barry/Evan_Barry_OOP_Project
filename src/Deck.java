@@ -28,8 +28,10 @@ public class Deck {
         return shuffled;
     }
 
-    public Card getC()
+    public Card getC(int i)
     {
+        c = cards[i];
+
         return c;
     }
 
@@ -90,7 +92,7 @@ public class Deck {
         return output;
     }
 
-    public void shuffle(Card[] cards)
+    public void shuffle()
     {
         Random rnd = new Random();
         for(int i = 0; i < cards.length; i++)

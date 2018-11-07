@@ -15,5 +15,13 @@ public class Blackjack {
     public Blackjack(int numOfDecks)
     {
         setNumberOfDecks(numOfDecks);
+
+        Deck deck = new Deck(getNumberOfDecks());
+
+        //System.out.println(deck.toString());
+
+        deck.shuffle();
+
+        //System.out.println(deck.toString());
     }
 }

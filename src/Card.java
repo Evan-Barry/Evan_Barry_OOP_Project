@@ -23,6 +23,11 @@ public class Card {
         this.value = value;
     }
 
+    public String toString()
+    {
+        return getValue() + " of " + getSuit();
+    }
+
     public Card(int suit, int value)
     {
         switch (suit)

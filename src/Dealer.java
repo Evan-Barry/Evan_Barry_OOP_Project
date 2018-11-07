@@ -2,7 +2,17 @@ public class Dealer extends Player{
 
     public Dealer()
     {
-        setName("Dealer");
+
+    }
+
+    public void dealHand()
+    {
+
+    }
+
+    public void dealCard()
+    {
+
     }
 
 }

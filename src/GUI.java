@@ -4,107 +4,139 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
-public class GUI extends JFrame {
+public class GUI extends JFrame implements ActionListener{
 
-    JButton newGameButton, pokerButton, blackjackButton, goFishButton;
-    boolean newGameButtonPressed = false;
+    JMenu gameMenu;
+    JLabel message;
+    Container cPane;
+    Dimension screenSize;
 
     public GUI()
     {
-        super("This is the game window");
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setSize((int)screenSize.getWidth(), (int)screenSize.getHeight());
-        setLocation(0,0);
-        setLayout(new FlowLayout());
-        getContentPane().setBackground(new Color(39, 119, 20));
-        newGameButton = new JButton("New Game");
-        newGameButton.setMnemonic(KeyEvent.VK_N);
-        newGameButton.setLocation(325,700);
-        newGameButton.addActionListener(new ButtonListener());
-        add(newGameButton);
+        setTitle("Blackjack");
+        screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        setSize((int)screenSize.getWidth()/2, (int)screenSize.getHeight()/2);
+        setLocation((int)screenSize.getWidth()/4,(int)screenSize.getHeight()/4);
         setResizable(false);
+
+        cPane = getContentPane();
+        cPane.setLayout(new GridLayout());
+        cPane.setBackground(new Color(39,119,20));
+
+        createGameMenu();
+
+        JMenuBar menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
+        menuBar.add(gameMenu);
+
+        message = new JLabel("Welcome");
+        message.setFont(new Font("SansSerif",Font.PLAIN,30));
+        message.setHorizontalAlignment(JLabel.CENTER);
+        message.setVerticalAlignment((JLabel.TOP));
+        cPane.add(message);
+
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
-    private class ButtonListener implements ActionListener
+    @Override
+    public void actionPerformed(ActionEvent e)
     {
-        @Override
-        public void actionPerformed(ActionEvent e)
+        String menuName;
+        menuName = e.getActionCommand();
+
+        if(menuName.equals("Quit"))
         {
-            if(e.getSource() == newGameButton && newGameButtonPressed == false)
-            {
-                newGameButton.setVisible(false);
-
-                pokerButton = new JButton("Poker");
-                pokerButton.setMnemonic(KeyEvent.VK_P);
-                pokerButton.addActionListener(new ButtonListener());
-                add(pokerButton);
-
-                blackjackButton = new JButton("Blackjack");
-                pokerButton.setMnemonic(KeyEvent.VK_B);
-                blackjackButton.addActionListener(new ButtonListener());
-                add(blackjackButton);
-
-                goFishButton = new JButton("Go Fish");
-                goFishButton.setMnemonic(KeyEvent.VK_G);
-                goFishButton.addActionListener(new ButtonListener());
-                add(goFishButton);
-
-                newGameButtonPressed = true;
-
-                revalidate();
-                repaint();
-            }
-
-            else if(e.getSource() == pokerButton)
-            {
-                clearButtons();
-            }
-
-            else if(e.getSource() == blackjackButton)
-            {
-                clearButtons();
-//                blackjack
-
-//                Card c = new Card(3,12);
-//
-//                ImageIcon image;
-//                JLabel imageLabel;
-//                String cardName = c.getValue() + c.getSuit();
-//
-//
-//
-//                image = new ImageIcon("C:\\Users\\t00202376\\Desktop\\" + cardName + ".png");
-//                imageLabel = new JLabel(image);
-//                imageLabel.setVisible(true);
-//                add(imageLabel);
-
-                String name = JOptionPane.showInputDialog("What is your name?");
-                Human h1 = new Human(name);
-
-                int numberOfDecks = Integer.parseInt(JOptionPane.showInputDialog("How many decks do you want to play with?"));
-                Deck d1 = new Deck(numberOfDecks);
-
-                System.out.println(d1.toString());
-
-                d1.shuffle(d1.getCards());
-
-                System.out.println(d1.toString());
-            }
-
-            else if(e.getSource() == goFishButton)
-            {
-                clearButtons();
-            }
+            System.exit(0);
         }
+
+        else if(menuName.equals("New Game"))
+        {
+            Deck d = setUpGame();
+            d.shuffle();
+            //displayHands(d);
+        }
+
+//
+//
+//        else if(e.getSource() == blackjackButton)
+//        {
+//            clearButtons();
+////                blackjack
+//
+////                Card c = new Card(3,12);
+////
+////                ImageIcon image;
+////                JLabel imageLabel;
+////                String cardName = c.getValue() + c.getSuit();
+////
+////
+////
+////                image = new ImageIcon("C:\\Users\\t00202376\\Desktop\\" + cardName + ".png");
+////                imageLabel = new JLabel(image);
+////                imageLabel.setVisible(true);
+////                add(imageLabel);
+//
+//
+//
+//            System.out.println(d1.toString());
+//
+//            d1.shuffle(d1.getCards());
+//
+//            System.out.println(d1.toString());
+//        }
     }
 
-    public void clearButtons()
+
+    private void createGameMenu()
     {
-        newGameButton.setVisible(false);
-        pokerButton.setVisible(false);
-        blackjackButton.setVisible(false);
-        goFishButton.setVisible(false);
+        JMenuItem item;
+
+        gameMenu = new JMenu("Game");
+
+        item = new JMenuItem("New Game");
+        item.setMnemonic(KeyEvent.VK_N);
+        item.addActionListener(this);
+        gameMenu.add(item);
+
+        gameMenu.addSeparator();
+
+        item = new JMenuItem("Quit");
+        item.setMnemonic(KeyEvent.VK_Q);
+        item.addActionListener(this);
+        gameMenu.add(item);
     }
+
+    private Deck setUpGame()
+    {
+        String name = JOptionPane.showInputDialog("What is your name?");
+        Human h1 = new Human(name);
+
+        Dealer d1 = new Dealer();
+
+        int numberOfDecks = Integer.parseInt(JOptionPane.showInputDialog("How many decks do you want to play with? (1(Easy) - 4(Very Hard))"));
+        Deck deck = new Deck(numberOfDecks);
+
+        message.setText("\t\t" + h1.getName());
+        screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        message.setHorizontalAlignment(JLabel.LEFT);
+        message.setVerticalAlignment((JLabel.BOTTOM));
+        cPane = getContentPane();
+        cPane.add(message);
+
+        Blackjack b1 = new Blackjack(numberOfDecks);
+
+        return deck;
+    }
+
+//    private void displayHands(Deck d)
+//    {
+//        Card c = new Card(0,0);
+//
+//        for(int i = 0; i < 2; i++)
+//        {
+//            d.getC(i);
+//            System.out.println(c.toString());
+//        }
+//    }
 
 }

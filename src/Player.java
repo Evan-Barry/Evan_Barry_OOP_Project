@@ -1,14 +1,24 @@
 public class Player {
 
-    private String name;
+    private Hand hand;
 
-    public String getName()
+    public Hand getHand()
     {
-        return name;
+        return hand;
     }
 
-    public void setName(String name)
+    public void setHand(Hand hand)
     {
-        this.name = name;
+        this.hand = hand;
+    }
+
+    public void hit()
+    {
+
+    }
+
+    public void stand()
+    {
+
     }
 }
