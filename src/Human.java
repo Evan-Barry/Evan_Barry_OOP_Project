@@ -1,6 +1,6 @@
 public class Human extends Player {
 
-    public String name;
+    private String name;
 
     public String getName()
     {
@@ -20,6 +20,11 @@ public class Human extends Player {
     public Human(String name)
     {
         setName(name);
+    }
+
+    public Human()
+    {
+        setName("Player 1");
     }
 
 }

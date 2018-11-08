@@ -1,14 +1,18 @@
+import com.sun.deploy.util.ArrayUtil;
+
+import java.util.Collections;
 import java.util.Random;
+import java.util.ArrayList;
 
 public class Deck {
 
-    private Card[] cards;
+    private ArrayList<Card> cards = new ArrayList<Card>();
     private Card c;
     private int availableCards;
     private int currentAmountOfCards;
     private boolean shuffled;
 
-    public Card[] getCards()
+    public ArrayList<Card> getCards()
     {
         return cards;
     }
@@ -38,7 +42,7 @@ public class Deck {
         this.availableCards = availableCards;
     }
 
-    public void setCards(Card[] cards)
+    public void setCards(ArrayList<Card> cards)
     {
         this.cards = cards;
     }
@@ -63,7 +67,7 @@ public class Deck {
         setAvailableCards(52 * numberOfDecks);
         setCurrentAmountOfCards(0);
         setShuffled(false);
-        cards = new Card[getAvailableCards()];
+        //cards = new Card[getAvailableCards()];
 
         for(int x = 0; x < numberOfDecks; x++)
         {
@@ -71,7 +75,8 @@ public class Deck {
             {
                 for(int j = 0; j < 13; j++)
                 {
-                    cards[currentAmountOfCards++] = new Card(i,j);
+                    //cards[currentAmountOfCards++] = new Card(i,j);
+                    cards.add(currentAmountOfCards,new Card(i,j));
                     //System.out.println(cards[currentAmountOfCards].getValue() + " " + cards[currentAmountOfCards].getSuit());
                 }
             }
@@ -82,9 +87,9 @@ public class Deck {
     {
         String output = "";
 
-        for(int k = 0; k < cards.length; k++)
+        for(int k = 0; k < cards.size(); k++)
         {
-            output += cards[k].getValue() + " of " + cards[k].getSuit() + "\n";
+            output += cards.get(k).getValue() + " of " + cards.get(k).getSuit() + "\n";
         }
 
         return output;
@@ -93,16 +98,21 @@ public class Deck {
     public void shuffle()
     {
         Random rnd = new Random();
-        for(int i = 0; i < cards.length; i++)
+        for(int i = 0; i < cards.size(); i++)
         {
             int j = rnd.nextInt(i+1);
 
-            Card c = cards[j];//pick random card from cards array
-            cards[j] = cards[i];//
-            cards[i] = c;
+            Card c = cards.get(j);//pick random card from cards array
+            cards.set(j,cards.get(i)); //= cards.get(i);//
+            cards.set(i,c);
         }
 
         setShuffled(true);
+    }
+
+    public void removeCard()
+    {
+        cards.remove(0);
     }
 
 }
