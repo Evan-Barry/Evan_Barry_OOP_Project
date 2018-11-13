@@ -15,7 +15,7 @@ public class GUI extends JFrame implements ActionListener{
     JPanel b3r1, b3r2, b3r3;
     Dimension screenSize;
     JLabel imageLabel;
-    JButton surrenderButton;
+    JButton hitButton, standButton, surrenderButton;
     ImageIcon image;
 
     Deck deck;
@@ -139,8 +139,6 @@ public class GUI extends JFrame implements ActionListener{
             System.out.println("Player Hit");
             surrenderButton.setEnabled(false);
             System.out.println(h1.getType());
-            //Give human a card
-            //playerHand.add(cardArrayList.get(0));
 
             dealCard(cardArrayList, playerHand, deck, h1.getType());
             System.out.println(playerHand.toString());
@@ -231,32 +229,27 @@ public class GUI extends JFrame implements ActionListener{
 
             else if(i == 3)
             {
-                playerType = "dealer";
                 cardName = "back";
-                dealCard(cardArrayList, playerHand, d, playerType, cardName);
+                dealCard(d, cardName);
             }
-
         }
 
         System.out.println(playerHand.toString());
-
     }
 
     private void addButtons()
     {
-        JButton button;
+        hitButton = new JButton("Hit");
+        hitButton.setVerticalAlignment(JButton.CENTER);
+        hitButton.setVisible(true);
+        hitButton.addActionListener(this);
+        b3r1.add(hitButton);
 
-        button = new JButton("Hit");
-        button.setVerticalAlignment(JButton.CENTER);
-        button.setVisible(true);
-        button.addActionListener(this);
-        b3r1.add(button);
-
-        button = new JButton("Stand");
-        button.setVerticalAlignment(JButton.CENTER);
-        button.setVisible(true);
-        button.addActionListener(this);
-        b3r2.add(button);
+        standButton = new JButton("Stand");
+        standButton.setVerticalAlignment(JButton.CENTER);
+        standButton.setVisible(true);
+        standButton.addActionListener(this);
+        b3r2.add(standButton);
 
         surrenderButton = new JButton("Surrender");
         surrenderButton.setVerticalAlignment(JButton.CENTER);
@@ -278,6 +271,7 @@ public class GUI extends JFrame implements ActionListener{
         {
             b2.add(imageLabel);
             playerHand.add(cardArrayList.get(0));
+            checkTotal(playerHand);
         }
 
         else if(playerType.equals("dealer"))
@@ -285,18 +279,111 @@ public class GUI extends JFrame implements ActionListener{
             t2.add(imageLabel);
         }
         d.removeCard();
+
+        revalidate();
+        //repaint();
     }
 
-    private void dealCard(ArrayList<Card> cardArrayList, ArrayList<Card> playerHand, Deck d, String playerType, String cardName1)
+    private void dealCard(Deck d, String cardName1)
     {
-        String cardName = cardName1;
 
-        image = new ImageIcon("resources/" + cardName + ".png");
+        image = new ImageIcon("resources/" + cardName1 + ".png");
         imageLabel = new JLabel(image);
         imageLabel.setVisible(true);
         imageLabel.setHorizontalAlignment(JLabel.LEFT );
         t2.add(imageLabel);
         d.removeCard();
+    }
+
+    private void checkTotal(ArrayList<Card> playerHand)
+    {
+
+        int total = 0;
+
+        for(int i = 0; i < playerHand.size(); i++)
+        {
+            //System.out.println(playerHand.get(i).getValue());
+            int value;
+            boolean soft = false;
+            boolean aceIs1 = false;
+            boolean aceDrawn = false;
+
+            switch(playerHand.get(i).getValue())
+            {
+                case "Ace":
+                    if(aceIs1 == true)
+                    {
+                        value = 1;
+                    }
+
+                    else
+                    {
+                        value = 11;
+                    }
+
+                    soft = true;
+                    aceDrawn = true;
+                    break;
+                case "Two":
+                    value = 2;
+                    break;
+                case "Three":
+                    value = 3;
+                    break;
+                case "Four":
+                    value = 4;
+                    break;
+                case "Five":
+                    value = 5;
+                    break;
+                case "Six":
+                    value = 6;
+                    break;
+                case "Seven":
+                    value = 7;
+                    break;
+                case "Eight":
+                    value = 8;
+                    break;
+                case "Nine":
+                    value = 9;
+                    break;
+                case "Ten":
+                    value = 10;
+                    break;
+                case "Jack":
+                    value = 10;
+                    break;
+                case "Queen":
+                    value = 10;
+                    break;
+                case "King":
+                    value = 10;
+                    break;
+                default:
+                    value = 0;
+            }
+
+            total += value;
+
+            System.out.println(total + " hello");
+
+            if(total > 21)
+            {
+                bust(h1.getType());
+            }
+
+            //Fix total calculation to include if an ace is 1 or 11
+
+        }
+    }
+
+    private void bust(String type)
+    {
+        JOptionPane.showMessageDialog(null, h1.getName() + " has bust!");
+        hitButton.setEnabled(false);
+        standButton.setEnabled(false);
+        surrenderButton.setEnabled(false);
     }
 
 }
