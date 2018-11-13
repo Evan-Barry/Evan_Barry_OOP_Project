@@ -16,6 +16,11 @@ public class GUI extends JFrame implements ActionListener{
     Dimension screenSize;
     JLabel imageLabel;
     JButton surrenderButton;
+    ImageIcon image;
+
+    Deck deck;
+    ArrayList<Card> playerHand;
+    ArrayList<Card> cardArrayList;
 
     Human h1;
     Dealer d1;
@@ -132,13 +137,15 @@ public class GUI extends JFrame implements ActionListener{
         else if(e.getActionCommand().equals("Hit"))
         {
             System.out.println("Player Hit");
-
-
+            surrenderButton.setEnabled(false);
+            //Give human a card
+            playerHand.add(cardArrayList.get(0));
         }
 
         else if(e.getActionCommand().equals("Stand"))
         {
             System.out.println("Player Stand");
+            surrenderButton.setEnabled(false);
         }
 
         else if(e.getActionCommand().equals("Surrender"))
@@ -172,7 +179,7 @@ public class GUI extends JFrame implements ActionListener{
         String name = JOptionPane.showInputDialog("What is your name?");
         h1.setName(name);
         int numberOfDecks = Integer.parseInt(JOptionPane.showInputDialog("How many decks do you want to play with? (1(Easy) - 4(Very Hard))"));
-        Deck deck = new Deck(numberOfDecks);
+        deck = new Deck(numberOfDecks);
 
         message.setText("Dealer");
         message.setHorizontalAlignment((JLabel.CENTER));
@@ -199,49 +206,32 @@ public class GUI extends JFrame implements ActionListener{
     {
         System.out.println(d.toString());
 
-        ArrayList<Card> cardArrayList = d.getCards();
-        ArrayList<Card> playerHand = new ArrayList<>();
+        cardArrayList = d.getCards();
+        playerHand = new ArrayList<>();
 
-        ImageIcon image;
-        for(int i = 0; i < 2; i++)
+        String playerType, cardName;
+
+        for(int i = 0; i < 4; i++)
         {
-            String cardName = cardArrayList.get(0).getValue() + cardArrayList.get(0).getSuit();
-
-            image = new ImageIcon("resources/" + cardName + ".png");
-            imageLabel = new JLabel(image);
-            imageLabel.setVisible(true);
-            imageLabel.setHorizontalAlignment(JLabel.LEFT );
-            b2.add(imageLabel);
-            d.removeCard();
-            //System.out.println(d.toString());
-            playerHand.add(cardArrayList.get(0));
-        }
-
-        for(int i = 2; i < 4; i++)
-        {
-            String cardName = cardArrayList.get(0).getValue() + cardArrayList.get(0).getSuit();
-
-            if(i == 2)
+            if(i == 0 || i == 1)
             {
-                image = new ImageIcon("resources/" + cardName + ".png");
-                imageLabel = new JLabel(image);
-                imageLabel.setVisible(true);
-                imageLabel.setHorizontalAlignment(JLabel.LEFT );
-                t2.add(imageLabel);
-                d.removeCard();
+                playerType = "human";
+                dealCard(cardArrayList, playerHand, d, playerType);
             }
 
-            else
+            else if(i == 2)
             {
-                image = new ImageIcon("resources/back.png");
-                imageLabel = new JLabel(image);
-                imageLabel.setVisible(true);
-                imageLabel.setHorizontalAlignment(JLabel.LEFT );
-                t2.add(imageLabel);
-                d.removeCard();
+                playerType = "dealer";
+                dealCard(cardArrayList, playerHand, d, playerType);
             }
 
-            System.out.println(d.toString());
+            else if(i == 3)
+            {
+                playerType = "dealer";
+                cardName = "back";
+                dealCard(cardArrayList, playerHand, d, playerType, cardName);
+            }
+
         }
 
     }
@@ -267,6 +257,43 @@ public class GUI extends JFrame implements ActionListener{
         surrenderButton.setVisible(true);
         surrenderButton.addActionListener(this);
         b3r3.add(surrenderButton);
+    }
+
+    private void dealCard(ArrayList<Card> cardArrayList, ArrayList<Card> playerHand, Deck d, String playerType)
+    {
+        String cardName = cardArrayList.get(0).getValue() + cardArrayList.get(0).getSuit();
+
+        image = new ImageIcon("resources/" + cardName + ".png");
+        imageLabel = new JLabel(image);
+        imageLabel.setVisible(true);
+        imageLabel.setHorizontalAlignment(JLabel.LEFT );
+
+        if(playerType.equals("human"))
+        {
+            b2.add(imageLabel);
+        }
+
+        else if(playerType.equals("dealer"))
+        {
+            t2.add(imageLabel);
+        }
+        d.removeCard();
+
+        playerHand.add(cardArrayList.get(0));
+    }
+
+    private void dealCard(ArrayList<Card> cardArrayList, ArrayList<Card> playerHand, Deck d, String playerType, String cardName1)
+    {
+        String cardName = cardName1;
+
+        image = new ImageIcon("resources/" + cardName + ".png");
+        imageLabel = new JLabel(image);
+        imageLabel.setVisible(true);
+        imageLabel.setHorizontalAlignment(JLabel.LEFT );
+        t2.add(imageLabel);
+        d.removeCard();
+
+        playerHand.add(cardArrayList.get(0));
     }
 
 }
