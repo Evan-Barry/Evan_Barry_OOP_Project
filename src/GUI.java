@@ -15,7 +15,7 @@ public class GUI extends JFrame implements ActionListener{
     JPanel b3r1, b3r2, b3r3;
     Dimension screenSize;
     JLabel imageLabel;
-    JButton hitButton, standButton, surrenderButton;
+    JButton surrenderButton;
 
     Human h1;
     Dealer d1;
@@ -112,15 +112,14 @@ public class GUI extends JFrame implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e)
     {
-        String menuName;
-        menuName = e.getActionCommand();
 
-        if(menuName.equals("Quit"))
+
+        if(e.getActionCommand().equals("Quit"))
         {
             System.exit(0);
         }
 
-        else if(menuName.equals("New Game"))
+        else if(e.getActionCommand().equals("New Game"))
         {
             h1 = new Human();
             d1 = new Dealer();
@@ -128,6 +127,23 @@ public class GUI extends JFrame implements ActionListener{
             d.shuffle();
             displayHands(d);
             addButtons();
+        }
+
+        else if(e.getActionCommand().equals("Hit"))
+        {
+            System.out.println("Player Hit");
+
+
+        }
+
+        else if(e.getActionCommand().equals("Stand"))
+        {
+            System.out.println("Player Stand");
+        }
+
+        else if(e.getActionCommand().equals("Surrender"))
+        {
+            System.out.println("Player Surrender");
         }
     }
 
@@ -232,19 +248,24 @@ public class GUI extends JFrame implements ActionListener{
 
     private void addButtons()
     {
-        hitButton = new JButton("Hit");
-        hitButton.setVerticalAlignment(JButton.CENTER);
-        hitButton.setVisible(true);
-        b3r1.add(hitButton);
+        JButton button;
 
-        standButton = new JButton("Stand");
-        standButton.setVerticalAlignment(JButton.CENTER);
-        standButton.setVisible(true);
-        b3r2.add(standButton);
+        button = new JButton("Hit");
+        button.setVerticalAlignment(JButton.CENTER);
+        button.setVisible(true);
+        button.addActionListener(this);
+        b3r1.add(button);
+
+        button = new JButton("Stand");
+        button.setVerticalAlignment(JButton.CENTER);
+        button.setVisible(true);
+        button.addActionListener(this);
+        b3r2.add(button);
 
         surrenderButton = new JButton("Surrender");
         surrenderButton.setVerticalAlignment(JButton.CENTER);
         surrenderButton.setVisible(true);
+        surrenderButton.addActionListener(this);
         b3r3.add(surrenderButton);
     }
 
