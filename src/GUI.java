@@ -128,9 +128,9 @@ public class GUI extends JFrame implements ActionListener{
         {
             h1 = new Human();
             d1 = new Dealer();
-            Deck d = setUpGame();
-            d.shuffle();
-            displayHands(d);
+            deck = setUpGame();
+            deck.shuffle();
+            displayHands(deck);
             addButtons();
         }
 
@@ -138,8 +138,12 @@ public class GUI extends JFrame implements ActionListener{
         {
             System.out.println("Player Hit");
             surrenderButton.setEnabled(false);
+            System.out.println(h1.getType());
             //Give human a card
-            playerHand.add(cardArrayList.get(0));
+            //playerHand.add(cardArrayList.get(0));
+
+            dealCard(cardArrayList, playerHand, deck, h1.getType());
+            System.out.println(playerHand.toString());
         }
 
         else if(e.getActionCommand().equals("Stand"))
@@ -234,6 +238,8 @@ public class GUI extends JFrame implements ActionListener{
 
         }
 
+        System.out.println(playerHand.toString());
+
     }
 
     private void addButtons()
@@ -271,6 +277,7 @@ public class GUI extends JFrame implements ActionListener{
         if(playerType.equals("human"))
         {
             b2.add(imageLabel);
+            playerHand.add(cardArrayList.get(0));
         }
 
         else if(playerType.equals("dealer"))
@@ -278,8 +285,6 @@ public class GUI extends JFrame implements ActionListener{
             t2.add(imageLabel);
         }
         d.removeCard();
-
-        playerHand.add(cardArrayList.get(0));
     }
 
     private void dealCard(ArrayList<Card> cardArrayList, ArrayList<Card> playerHand, Deck d, String playerType, String cardName1)
@@ -292,8 +297,6 @@ public class GUI extends JFrame implements ActionListener{
         imageLabel.setHorizontalAlignment(JLabel.LEFT );
         t2.add(imageLabel);
         d.removeCard();
-
-        playerHand.add(cardArrayList.get(0));
     }
 
 }

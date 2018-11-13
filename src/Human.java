@@ -20,11 +20,13 @@ public class Human extends Player {
     public Human(String name)
     {
         setName(name);
+        setType("human");
     }
 
     public Human()
     {
         setName("Player 1");
+        setType("human");
     }
 
 }
