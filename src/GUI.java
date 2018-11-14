@@ -7,24 +7,24 @@ import java.util.ArrayList;
 
 public class GUI extends JFrame implements ActionListener{
 
-    JMenu gameMenu;
-    JLabel message;
-    Container cPane;
-    JPanel topPanel, bottomPanel;
-    JPanel t1, t2, t3, b1, b2, b3;
-    JPanel b3r1, b3r2, b3r3;
-    Dimension screenSize;
-    JLabel imageLabel;
-    JButton hitButton, standButton, surrenderButton;
-    ImageIcon image;
+    private JMenu gameMenu;
+    private JLabel message;
+    private Container cPane;
+    private JPanel topPanel, bottomPanel;
+    private JPanel t1, t2, t3, b1, b2, b3;
+    private JPanel b3r1, b3r2, b3r3;
+    private Dimension screenSize;
+    private JLabel imageLabel;
+    private JButton hitButton, standButton, surrenderButton;
+    private ImageIcon image;
 
-    Deck deck;
-    ArrayList<Card> playerHand;
-    ArrayList<Card> cardArrayList;
+    private Deck deck;
+    private ArrayList<Card> playerHand;
+    private ArrayList<Card> cardArrayList;
 
-    Human h1;
-    Dealer d1;
-    Blackjack blackjack;
+    private Player human = new Player("Unknown", "human");
+    private Player dealer = new Player("Casino", "dealer");
+    private Blackjack blackjack;
 
     public GUI()
     {
@@ -36,7 +36,6 @@ public class GUI extends JFrame implements ActionListener{
         cPane = getContentPane();
         cPane.setLayout(new GridLayout(2,1));
         cPane.setBackground(new Color(39,119,20));
-
 
         topPanel = new JPanel();
         bottomPanel = new JPanel();
@@ -126,8 +125,6 @@ public class GUI extends JFrame implements ActionListener{
 
         else if(e.getActionCommand().equals("New Game"))
         {
-            h1 = new Human();
-            d1 = new Dealer();
             deck = setUpGame();
             deck.shuffle();
             displayHands(deck);
@@ -138,9 +135,8 @@ public class GUI extends JFrame implements ActionListener{
         {
             System.out.println("Player Hit");
             surrenderButton.setEnabled(false);
-            System.out.println(h1.getType());
 
-            dealCard(cardArrayList, playerHand, deck, h1.getType());
+            dealCard(cardArrayList, playerHand, deck, human.getType());
             System.out.println(playerHand.toString());
         }
 
@@ -148,11 +144,15 @@ public class GUI extends JFrame implements ActionListener{
         {
             System.out.println("Player Stand");
             surrenderButton.setEnabled(false);
+            hitButton.setEnabled(false);
         }
 
         else if(e.getActionCommand().equals("Surrender"))
         {
-            System.out.println("Player Surrender");
+            JOptionPane.showMessageDialog(null, "Human Surrenders! Game Over!");
+            surrenderButton.setEnabled(false);
+            hitButton.setEnabled(false);
+            standButton.setEnabled(false);
         }
     }
 
@@ -179,11 +179,11 @@ public class GUI extends JFrame implements ActionListener{
     private Deck setUpGame()
     {
         String name = JOptionPane.showInputDialog("What is your name?");
-        h1.setName(name);
+        human.setName(name);
         int numberOfDecks = Integer.parseInt(JOptionPane.showInputDialog("How many decks do you want to play with? (1(Easy) - 4(Very Hard))"));
         deck = new Deck(numberOfDecks);
 
-        message.setText("Dealer");
+        message.setText(dealer.getName());
         message.setHorizontalAlignment((JLabel.CENTER));
         message.setVerticalAlignment(((JLabel.CENTER)));
         t1.add(message);
@@ -192,7 +192,7 @@ public class GUI extends JFrame implements ActionListener{
 
         message = new JLabel();
         message.setFont(new Font("SansSerif",Font.PLAIN,30));
-        message.setText(h1.getName());
+        message.setText(human.getName());
         message.setHorizontalAlignment(JLabel.CENTER);
         message.setVerticalAlignment((JLabel.CENTER));
         b1.add(message);
@@ -304,25 +304,11 @@ public class GUI extends JFrame implements ActionListener{
         {
             //System.out.println(playerHand.get(i).getValue());
             int value;
-            boolean soft = false;
-            boolean aceIs1 = false;
-            boolean aceDrawn = false;
 
             switch(playerHand.get(i).getValue())
             {
                 case "Ace":
-                    if(aceIs1 == true)
-                    {
-                        value = 1;
-                    }
-
-                    else
-                    {
-                        value = 11;
-                    }
-
-                    soft = true;
-                    aceDrawn = true;
+                    value = 11;
                     break;
                 case "Two":
                     value = 2;
@@ -366,24 +352,32 @@ public class GUI extends JFrame implements ActionListener{
 
             total += value;
 
-            System.out.println(total + " hello");
+            System.out.println(total + " i count : " + i);
+
+            if(total == 21)
+            {
+                winner(human.getType());
+            }
 
             if(total > 21)
             {
-                bust(h1.getType());
+                bust(human.getType());
             }
-
-            //Fix total calculation to include if an ace is 1 or 11
 
         }
     }
 
     private void bust(String type)
     {
-        JOptionPane.showMessageDialog(null, h1.getName() + " has bust!");
+        JOptionPane.showMessageDialog(null, type + " has bust!");
         hitButton.setEnabled(false);
         standButton.setEnabled(false);
         surrenderButton.setEnabled(false);
+    }
+
+    private void winner(String type)
+    {
+        JOptionPane.showMessageDialog(null, type + " wins!");
     }
 
 }

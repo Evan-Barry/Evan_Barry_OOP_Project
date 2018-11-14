@@ -2,28 +2,13 @@ public class Player {
 
     private Hand hand;
 
-    private boolean winner;
-
     private String type;
 
-    public Hand getHand()
-    {
-        return hand;
-    }
+    private String name;
 
-    public void setHand(Hand hand)
+    public String getName()
     {
-        this.hand = hand;
-    }
-
-    public boolean isWinner()
-    {
-        return winner;
-    }
-
-    public void setWinner(boolean winner)
-    {
-        this.winner = winner;
+        return name;
     }
 
     public String getType()
@@ -31,18 +16,19 @@ public class Player {
         return type;
     }
 
+    public void setName(String name)
+    {
+        this.name = name;
+    }
+
     public void setType(String type)
     {
         this.type = type;
     }
 
-    public void hit()
+    public Player(String name, String type)
     {
-
-    }
-
-    public void stand()
-    {
-
+        setName(name);
+        setType(type);
     }
 }
