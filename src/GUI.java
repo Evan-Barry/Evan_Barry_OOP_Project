@@ -149,6 +149,7 @@ public class GUI extends JFrame implements ActionListener{
             surrenderButton.setEnabled(false);
 
             dealCard(cardArrayList, deck, human.getType());
+            human.setLastMoveMade("HIT");
             System.out.println(human.getHand().toString());
         }
 
@@ -157,6 +158,7 @@ public class GUI extends JFrame implements ActionListener{
             System.out.println("Player Stand");
             surrenderButton.setEnabled(false);
             hitButton.setEnabled(false);
+            human.setLastMoveMade("STAND");
 
             if(!isDealerSecondCardFaceUp())
             {
@@ -181,6 +183,13 @@ public class GUI extends JFrame implements ActionListener{
             while(blackjack.checkTotal(dealer.getHand(), dealer.getType()) < 17)
             {
                 dealCard(cardArrayList, deck, dealer.getType());
+                dealer.setLastMoveMade("HIT");
+            }
+
+            if(blackjack.checkTotal(dealer.getHand(), dealer.getType()) >= 17)
+            {
+                dealer.setLastMoveMade("STAND");
+                hitButton.setEnabled(true);
             }
         }
 
@@ -323,7 +332,10 @@ public class GUI extends JFrame implements ActionListener{
         {
             t2.add(imageLabel);
             dealer.hit(cardArrayList.get(0));
-            blackjack.checkTotal(dealer.getHand(), dealer.getType());
+            if(dealer.getMovesMade() > 0)
+            {
+                blackjack.checkTotal(dealer.getHand(), dealer.getType());
+            }
         }
         d.removeCard();
 

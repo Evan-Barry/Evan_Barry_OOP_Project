@@ -107,6 +107,8 @@ public class Blackjack {
             {
                 bust(type);
             }
+
+
         }
 
         return total;
@@ -121,6 +123,11 @@ public class Blackjack {
     private void winner(String type)
     {
         JOptionPane.showMessageDialog(null, type + " wins!");
+    }
+
+    public static void main(String[] args) {
+        GUI window = new GUI();
+        window.setVisible(true);
     }
 
 }
