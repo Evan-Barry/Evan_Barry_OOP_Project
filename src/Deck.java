@@ -6,10 +6,8 @@ import java.util.ArrayList;
 
 public class Deck {
 
-    private ArrayList<Card> cards = new ArrayList<Card>();
-    private Card c;
+    private ArrayList<Card> cards = new ArrayList<>();// New array list of cards, the deck
     private int availableCards;
-    private int currentAmountOfCards;
     private boolean shuffled;
 
     public ArrayList<Card> getCards()
@@ -22,19 +20,9 @@ public class Deck {
         return availableCards;
     }
 
-    public int getCurrentAmountOfCards()
-    {
-        return currentAmountOfCards;
-    }
-
     public boolean isShuffled()
     {
         return shuffled;
-    }
-
-    public Card getC()
-    {
-        return c;
     }
 
     public void setAvailableCards(int availableCards)
@@ -47,27 +35,15 @@ public class Deck {
         this.cards = cards;
     }
 
-    public void setCurrentAmountOfCards(int currentAmountOfCards)
-    {
-        this.currentAmountOfCards = currentAmountOfCards;
-    }
-
     public void setShuffled(boolean shuffled)
     {
         this.shuffled = shuffled;
     }
 
-    public void setC(Card c)
-    {
-        this.c = c;
-    }
-
     public Deck(int numberOfDecks)
     {
         setAvailableCards(52 * numberOfDecks);
-        setCurrentAmountOfCards(0);
         setShuffled(false);
-        //cards = new Card[getAvailableCards()];
 
         for(int x = 0; x < numberOfDecks; x++)
         {
@@ -75,9 +51,7 @@ public class Deck {
             {
                 for(int j = 0; j < 13; j++)
                 {
-                    //cards[currentAmountOfCards++] = new Card(i,j);
-                    cards.add(currentAmountOfCards,new Card(i,j));
-                    //System.out.println(cards[currentAmountOfCards].getValue() + " " + cards[currentAmountOfCards].getSuit());
+                    cards.add(0,new Card(i,j));
                 }
             }
         }

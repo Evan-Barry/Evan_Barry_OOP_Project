@@ -14,8 +14,8 @@ public class GUI extends JFrame implements ActionListener{
     private JPanel t1, t2, t3, b1, b2, b3;
     private JPanel b3r1, b3r2, b3r3;
     private Dimension screenSize;
-    private JLabel imageLabel;
-    private JButton hitButton, standButton, surrenderButton;
+    private JLabel imageLabel, dealerSecondCardImageLabel;
+    private static JButton hitButton, standButton, surrenderButton;
     private ImageIcon image;
 
     private Deck deck;
@@ -25,6 +25,7 @@ public class GUI extends JFrame implements ActionListener{
     private Player human = new Player("Unknown", "human");
     private Player dealer = new Player("Casino", "dealer");
     private Blackjack blackjack;
+    private boolean dealerSecondCardFaceUp = false;
 
     public GUI()
     {
@@ -113,6 +114,16 @@ public class GUI extends JFrame implements ActionListener{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 
+    public boolean isDealerSecondCardFaceUp()
+    {
+        return dealerSecondCardFaceUp;
+    }
+
+    public void setDealerSecondCardFaceUp(boolean dealerSecondCardFaceUp)
+    {
+        this.dealerSecondCardFaceUp = dealerSecondCardFaceUp;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e)
     {
@@ -127,6 +138,7 @@ public class GUI extends JFrame implements ActionListener{
         {
             deck = setUpGame();
             deck.shuffle();
+            //displayHands(deck);
             displayHands(deck);
             addButtons();
         }
@@ -136,8 +148,8 @@ public class GUI extends JFrame implements ActionListener{
             System.out.println("Player Hit");
             surrenderButton.setEnabled(false);
 
-            dealCard(cardArrayList, playerHand, deck, human.getType());
-            System.out.println(playerHand.toString());
+            dealCard(cardArrayList, deck, human.getType());
+            System.out.println(human.getHand().toString());
         }
 
         else if(e.getActionCommand().equals("Stand"))
@@ -145,6 +157,31 @@ public class GUI extends JFrame implements ActionListener{
             System.out.println("Player Stand");
             surrenderButton.setEnabled(false);
             hitButton.setEnabled(false);
+
+            if(!isDealerSecondCardFaceUp())
+            {
+                t2.remove(dealerSecondCardImageLabel);
+                revalidate();
+                repaint();
+
+                String cardName = dealer.getHand().get(1).getValue() + dealer.getHand().get(1).getSuit();
+
+                image = new ImageIcon("resources/" + cardName + ".png");
+                dealerSecondCardImageLabel = new JLabel(image);
+                dealerSecondCardImageLabel.setVisible(true);
+                dealerSecondCardImageLabel.setHorizontalAlignment(JLabel.LEFT );
+
+                t2.add(dealerSecondCardImageLabel);
+                revalidate();
+                repaint();
+
+                setDealerSecondCardFaceUp(true);
+            }
+
+            while(blackjack.checkTotal(dealer.getHand(), dealer.getType()) < 17)
+            {
+                dealCard(cardArrayList, deck, dealer.getType());
+            }
         }
 
         else if(e.getActionCommand().equals("Surrender"))
@@ -218,13 +255,13 @@ public class GUI extends JFrame implements ActionListener{
             if(i == 0 || i == 1)
             {
                 playerType = "human";
-                dealCard(cardArrayList, playerHand, d, playerType);
+                dealCard(cardArrayList, d, playerType);
             }
 
             else if(i == 2)
             {
                 playerType = "dealer";
-                dealCard(cardArrayList, playerHand, d, playerType);
+                dealCard(cardArrayList, d, playerType);
             }
 
             else if(i == 3)
@@ -234,7 +271,8 @@ public class GUI extends JFrame implements ActionListener{
             }
         }
 
-        System.out.println(playerHand.toString());
+        System.out.println("Human hand - " + human.getHand().toString());
+        System.out.println("Dealer hand - " + dealer.getHand().toString());
     }
 
     private void addButtons()
@@ -258,7 +296,14 @@ public class GUI extends JFrame implements ActionListener{
         b3r3.add(surrenderButton);
     }
 
-    private void dealCard(ArrayList<Card> cardArrayList, ArrayList<Card> playerHand, Deck d, String playerType)
+    public static void disableButtons()
+    {
+        hitButton.setEnabled(false);
+        standButton.setEnabled(false);
+        surrenderButton.setEnabled(false);
+    }
+
+    private void dealCard(ArrayList<Card> cardArrayList, Deck d, String playerType)
     {
         String cardName = cardArrayList.get(0).getValue() + cardArrayList.get(0).getSuit();
 
@@ -270,13 +315,15 @@ public class GUI extends JFrame implements ActionListener{
         if(playerType.equals("human"))
         {
             b2.add(imageLabel);
-            playerHand.add(cardArrayList.get(0));
-            checkTotal(playerHand);
+            human.hit(cardArrayList.get(0));
+            blackjack.checkTotal(human.getHand(), human.getType());
         }
 
         else if(playerType.equals("dealer"))
         {
             t2.add(imageLabel);
+            dealer.hit(cardArrayList.get(0));
+            blackjack.checkTotal(dealer.getHand(), dealer.getType());
         }
         d.removeCard();
 
@@ -288,96 +335,15 @@ public class GUI extends JFrame implements ActionListener{
     {
 
         image = new ImageIcon("resources/" + cardName1 + ".png");
-        imageLabel = new JLabel(image);
-        imageLabel.setVisible(true);
-        imageLabel.setHorizontalAlignment(JLabel.LEFT );
-        t2.add(imageLabel);
+        dealerSecondCardImageLabel = new JLabel(image);
+        dealerSecondCardImageLabel.setVisible(true);
+        dealerSecondCardImageLabel.setHorizontalAlignment(JLabel.LEFT );
+        t2.add(dealerSecondCardImageLabel);
+        dealer.hit(cardArrayList.get(0));
+        blackjack.checkTotal(dealer.getHand(), dealer.getType());
         d.removeCard();
     }
 
-    private void checkTotal(ArrayList<Card> playerHand)
-    {
 
-        int total = 0;
-
-        for(int i = 0; i < playerHand.size(); i++)
-        {
-            //System.out.println(playerHand.get(i).getValue());
-            int value;
-
-            switch(playerHand.get(i).getValue())
-            {
-                case "Ace":
-                    value = 11;
-                    break;
-                case "Two":
-                    value = 2;
-                    break;
-                case "Three":
-                    value = 3;
-                    break;
-                case "Four":
-                    value = 4;
-                    break;
-                case "Five":
-                    value = 5;
-                    break;
-                case "Six":
-                    value = 6;
-                    break;
-                case "Seven":
-                    value = 7;
-                    break;
-                case "Eight":
-                    value = 8;
-                    break;
-                case "Nine":
-                    value = 9;
-                    break;
-                case "Ten":
-                    value = 10;
-                    break;
-                case "Jack":
-                    value = 10;
-                    break;
-                case "Queen":
-                    value = 10;
-                    break;
-                case "King":
-                    value = 10;
-                    break;
-                default:
-                    value = 0;
-            }
-
-            total += value;
-
-            System.out.println(total + " i count : " + i);
-
-            if(total == 21)
-            {
-                winner(human.getType());
-            }
-
-            if(total > 21)
-            {
-                bust(human.getType());
-            }
-
-        }
-    }
-
-    private void bust(String type)
-    {
-        JOptionPane.showMessageDialog(null, type + " has bust!");
-        hitButton.setEnabled(false);
-        standButton.setEnabled(false);
-        surrenderButton.setEnabled(false);
-    }
-
-    private void winner(String type)
-    {
-        JOptionPane.showMessageDialog(null, type + " wins!");
-    }
 
 }
