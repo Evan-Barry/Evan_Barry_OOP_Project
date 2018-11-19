@@ -6,7 +6,8 @@ public class Player {
     private String name;
     private ArrayList<Card> hand = new ArrayList<>();//array list of cards, the hand
     private String lastMoveMade;
-    private int movesMade = 0;
+    private int movesMade;
+    private int handValue;
 
     public String getName()
     {
@@ -26,6 +27,11 @@ public class Player {
     public String getLastMoveMade()
     {
         return lastMoveMade;
+    }
+
+    public int getHandValue()
+    {
+        return handValue;
     }
 
     public int getMovesMade()
@@ -53,10 +59,17 @@ public class Player {
         this.movesMade = movesMade;
     }
 
+    public void setHandValue(int handValue)
+    {
+        this.handValue = handValue;
+    }
+
     public Player(String name, String type)
     {
         setName(name);
         setType(type);
+        setMovesMade(0);
+        setHandValue(0);
     }
 
     public void hit(Card c)

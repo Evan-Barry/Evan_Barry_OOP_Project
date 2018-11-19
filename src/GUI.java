@@ -9,17 +9,16 @@ public class GUI extends JFrame implements ActionListener{
 
     private JMenu gameMenu;
     private JLabel message;
-    private Container cPane;
-    private JPanel topPanel, bottomPanel;
-    private JPanel t1, t2, t3, b1, b2, b3;
+    private JPanel t1;
+    private JPanel t2;
+    private JPanel b1;
+    private JPanel b2;
     private JPanel b3r1, b3r2, b3r3;
-    private Dimension screenSize;
-    private JLabel imageLabel, dealerSecondCardImageLabel;
+    private JLabel dealerSecondCardImageLabel;
     private static JButton hitButton, standButton, surrenderButton;
     private ImageIcon image;
 
     private Deck deck;
-    private ArrayList<Card> playerHand;
     private ArrayList<Card> cardArrayList;
 
     private Player human = new Player("Unknown", "human");
@@ -27,25 +26,25 @@ public class GUI extends JFrame implements ActionListener{
     private Blackjack blackjack;
     private boolean dealerSecondCardFaceUp = false;
 
-    public GUI()
+    GUI()
     {
         setTitle("Blackjack");
-        screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        setSize((int)screenSize.getWidth(), (int)screenSize.getHeight());
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        setSize((int) screenSize.getWidth(), (int) screenSize.getHeight());
         setResizable(false);
 
-        cPane = getContentPane();
+        Container cPane = getContentPane();
         cPane.setLayout(new GridLayout(2,1));
         cPane.setBackground(new Color(39,119,20));
 
-        topPanel = new JPanel();
-        bottomPanel = new JPanel();
+        JPanel topPanel = new JPanel();
+        JPanel bottomPanel = new JPanel();
 
-        topPanel.setSize((int)screenSize.getWidth(), (int)screenSize.getHeight()/2);
-        bottomPanel.setSize((int)screenSize.getWidth(), (int)screenSize.getHeight()/2);
+        topPanel.setSize((int) screenSize.getWidth(), (int) screenSize.getHeight()/2);
+        bottomPanel.setSize((int) screenSize.getWidth(), (int) screenSize.getHeight()/2);
 
         topPanel.setLocation(0,0);
-        bottomPanel.setLocation(0, (int)screenSize.getHeight()/2);
+        bottomPanel.setLocation(0, (int) screenSize.getHeight()/2);
 
         cPane.add(topPanel);
         cPane.add(bottomPanel);
@@ -55,7 +54,7 @@ public class GUI extends JFrame implements ActionListener{
 
         t1 = new JPanel();
         t2 = new JPanel();
-        t3 = new JPanel();
+        JPanel t3 = new JPanel();
 
         t1.setBackground(cPane.getBackground());
         t2.setBackground(cPane.getBackground());
@@ -71,7 +70,7 @@ public class GUI extends JFrame implements ActionListener{
 
         b1 = new JPanel();
         b2 = new JPanel();
-        b3 = new JPanel();
+        JPanel b3 = new JPanel();
 
         b1.setBackground(cPane.getBackground());
         b2.setBackground(cPane.getBackground());
@@ -111,15 +110,15 @@ public class GUI extends JFrame implements ActionListener{
         message.setVerticalAlignment((JLabel.TOP));
         t2.add(message);
 
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
 
-    public boolean isDealerSecondCardFaceUp()
+    private boolean isDealerSecondCardFaceUp()
     {
         return dealerSecondCardFaceUp;
     }
 
-    public void setDealerSecondCardFaceUp(boolean dealerSecondCardFaceUp)
+    private void setDealerSecondCardFaceUp(boolean dealerSecondCardFaceUp)
     {
         this.dealerSecondCardFaceUp = dealerSecondCardFaceUp;
     }
@@ -150,7 +149,12 @@ public class GUI extends JFrame implements ActionListener{
 
             dealCard(cardArrayList, deck, human.getType());
             human.setLastMoveMade("HIT");
+            human.setMovesMade(human.getMovesMade()+1);
             System.out.println(human.getHand().toString());
+            if(human.getHandValue() > 21)
+            {
+                checkWinner(0);
+            }
         }
 
         else if(e.getActionCommand().equals("Stand"))
@@ -159,6 +163,7 @@ public class GUI extends JFrame implements ActionListener{
             surrenderButton.setEnabled(false);
             hitButton.setEnabled(false);
             human.setLastMoveMade("STAND");
+            human.setMovesMade(human.getMovesMade()+1);
 
             if(!isDealerSecondCardFaceUp())
             {
@@ -184,12 +189,17 @@ public class GUI extends JFrame implements ActionListener{
             {
                 dealCard(cardArrayList, deck, dealer.getType());
                 dealer.setLastMoveMade("HIT");
+                dealer.setMovesMade(dealer.getMovesMade()+1);
+                checkWinner(11);
             }
 
             if(blackjack.checkTotal(dealer.getHand(), dealer.getType()) >= 17)
             {
                 dealer.setLastMoveMade("STAND");
+                dealer.setHandValue(blackjack.checkTotal(dealer.getHand(), dealer.getType()));
+                dealer.setMovesMade(dealer.getMovesMade()+1);
                 hitButton.setEnabled(true);
+                checkWinner(12);
             }
         }
 
@@ -255,7 +265,6 @@ public class GUI extends JFrame implements ActionListener{
         System.out.println(d.toString());
 
         cardArrayList = d.getCards();
-        playerHand = new ArrayList<>();
 
         String playerType, cardName;
 
@@ -273,11 +282,15 @@ public class GUI extends JFrame implements ActionListener{
                 dealCard(cardArrayList, d, playerType);
             }
 
-            else if(i == 3)
-            {
+            else {
                 cardName = "back";
                 dealCard(d, cardName);
             }
+        }
+
+        if(human.getHandValue() == 21)
+        {
+            checkWinner(2);
         }
 
         System.out.println("Human hand - " + human.getHand().toString());
@@ -305,7 +318,7 @@ public class GUI extends JFrame implements ActionListener{
         b3r3.add(surrenderButton);
     }
 
-    public static void disableButtons()
+    private static void disableButtons()
     {
         hitButton.setEnabled(false);
         standButton.setEnabled(false);
@@ -317,7 +330,7 @@ public class GUI extends JFrame implements ActionListener{
         String cardName = cardArrayList.get(0).getValue() + cardArrayList.get(0).getSuit();
 
         image = new ImageIcon("resources/" + cardName + ".png");
-        imageLabel = new JLabel(image);
+        JLabel imageLabel = new JLabel(image);
         imageLabel.setVisible(true);
         imageLabel.setHorizontalAlignment(JLabel.LEFT );
 
@@ -325,22 +338,21 @@ public class GUI extends JFrame implements ActionListener{
         {
             b2.add(imageLabel);
             human.hit(cardArrayList.get(0));
-            blackjack.checkTotal(human.getHand(), human.getType());
+            human.setHandValue(blackjack.checkTotal(human.getHand(), human.getType()));
         }
 
         else if(playerType.equals("dealer"))
         {
             t2.add(imageLabel);
             dealer.hit(cardArrayList.get(0));
-            if(dealer.getMovesMade() > 0)
-            {
-                blackjack.checkTotal(dealer.getHand(), dealer.getType());
-            }
+            dealer.setHandValue(blackjack.checkTotal(dealer.getHand(), dealer.getType()));
         }
         d.removeCard();
 
         revalidate();
         //repaint();
+
+
     }
 
     private void dealCard(Deck d, String cardName1)
@@ -356,6 +368,56 @@ public class GUI extends JFrame implements ActionListener{
         d.removeCard();
     }
 
+    private void checkWinner(int code)
+    {
+        if(human.getHandValue() == 21 && human.getMovesMade() == 0 && dealer.getHandValue() != 21 && !blackjack.isGameOver())
+        {
+            JOptionPane.showMessageDialog(null, "Blackjack! " + human.getName() + " Wins!", "Blackjack!", JOptionPane.INFORMATION_MESSAGE);
+            blackjack.setGameOver(true);
+        }
 
+        System.out.println("Checking winner" + "\nhuman hand value - " + human.getHandValue()+ "\ndealer hand value - " + dealer.getHandValue());
+
+        if(human.getHandValue() > 21 && !blackjack.isGameOver())
+        {
+            blackjack.bust(human, dealer);
+            blackjack.setGameOver(true);
+            System.out.println("Game Code - " + code);
+        }
+
+        else if(dealer.getHandValue() > 21 && !blackjack.isGameOver())
+        {
+            blackjack.bust(dealer, human);
+            blackjack.setGameOver(true);
+            System.out.println("Game Code - " + code);
+        }
+
+        else if(human.getHandValue() > dealer.getHandValue() && !blackjack.isGameOver())
+        {
+            blackjack.winner(human);
+            blackjack.setGameOver(true);
+            System.out.println("Game Code - " + code);
+        }
+
+        else if(dealer.getHandValue() > human.getHandValue() && !blackjack.isGameOver())
+        {
+            blackjack.winner(dealer);
+            blackjack.setGameOver(true);
+            System.out.println("Game Code - " + code);
+        }
+
+        else if(human.getHandValue() == dealer.getHandValue() && !blackjack.isGameOver())
+        {
+            blackjack.draw();
+            blackjack.setGameOver(true);
+            System.out.println("Game code " + code);
+        }
+
+        if(blackjack.isGameOver())
+        {
+            disableButtons();
+        }
+
+    }
 
 }

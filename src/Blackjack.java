@@ -98,7 +98,7 @@ public class Blackjack {
 
             System.out.println(total + " " + type + " i count : " + i);
 
-            if(total == 21)
+            /*if(total == 21)
             {
                 winner(type);
             }
@@ -106,7 +106,7 @@ public class Blackjack {
             if(total > 21)
             {
                 bust(type);
-            }
+            }*/
 
 
         }
@@ -114,15 +114,19 @@ public class Blackjack {
         return total;
     }
 
-    private void bust(String type)
+    public void bust(Player loser, Player winner)
     {
-        JOptionPane.showMessageDialog(null, type + " has bust!");
-        GUI.disableButtons();
+        JOptionPane.showMessageDialog(null, loser.getName() + " has bust!", winner.getName() + " Wins!", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    private void winner(String type)
+    public void winner(Player winner)
     {
-        JOptionPane.showMessageDialog(null, type + " wins!");
+        JOptionPane.showMessageDialog(null, winner.getName() + " wins with a total of: " + winner.getHandValue(), winner.getName() + " Wins!", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void draw()
+    {
+        JOptionPane.showMessageDialog(null, "Draw");
     }
 
     public static void main(String[] args) {
