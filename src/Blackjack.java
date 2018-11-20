@@ -1,11 +1,19 @@
 import javax.swing.*;
 import java.util.ArrayList;
 
-public class Blackjack {
+public class Blackjack implements EndGameConditions{
 
     private int numberOfDecks;
 
     private boolean gameOver;
+
+    private int numGamesPlayed;
+
+    private int numGamesWon;
+
+    private int numGamesLost;
+
+    private int numGamesDrawn;
 
     public int getNumberOfDecks()
     {
@@ -27,17 +35,53 @@ public class Blackjack {
         this.gameOver = gameOver;
     }
 
+    public int getNumGamesPlayed()
+    {
+        return numGamesPlayed;
+    }
+
+    public int getNumGamesWon()
+    {
+        return numGamesWon;
+    }
+
+    public int getNumGamesLost()
+    {
+        return numGamesLost;
+    }
+
+    public int getNumGamesDrawn()
+    {
+        return numGamesDrawn;
+    }
+
+    public void setNumGamesPlayed(int numGamesPlayed)
+    {
+        this.numGamesPlayed = numGamesPlayed;
+    }
+
+    public void setNumGamesWon(int numGamesWon)
+    {
+        this.numGamesWon = numGamesWon;
+    }
+
+    public void setNumGamesLost(int numGamesLost)
+    {
+        this.numGamesLost = numGamesLost;
+    }
+
+    public void setNumGamesDrawn(int numGamesDrawn)
+    {
+        this.numGamesDrawn = numGamesDrawn;
+    }
+
     public Blackjack(int numOfDecks)
     {
         setNumberOfDecks(numOfDecks);
 
         Deck deck = new Deck(getNumberOfDecks());
 
-        //System.out.println(deck.toString());
-
         deck.shuffle();
-
-        //System.out.println(deck.toString());
     }
 
     public int checkTotal(ArrayList<Card> playerHand, String type)
@@ -46,7 +90,6 @@ public class Blackjack {
 
         for(int i = 0; i < playerHand.size(); i++)
         {
-            //System.out.println(playerHand.get(i).getValue());
             int value;
 
             switch(playerHand.get(i).getValue())
@@ -97,18 +140,6 @@ public class Blackjack {
             total += value;
 
             System.out.println(total + " " + type + " i count : " + i);
-
-            /*if(total == 21)
-            {
-                winner(type);
-            }
-
-            if(total > 21)
-            {
-                bust(type);
-            }*/
-
-
         }
 
         return total;

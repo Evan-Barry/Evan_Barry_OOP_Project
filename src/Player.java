@@ -5,7 +5,6 @@ public class Player {
     private String type;
     private String name;
     private ArrayList<Card> hand = new ArrayList<>();//array list of cards, the hand
-    private String lastMoveMade;
     private int movesMade;
     private int handValue;
 
@@ -22,11 +21,6 @@ public class Player {
     public ArrayList<Card> getHand()
     {
         return hand;
-    }
-
-    public String getLastMoveMade()
-    {
-        return lastMoveMade;
     }
 
     public int getHandValue()
@@ -47,11 +41,6 @@ public class Player {
     public void setType(String type)
     {
         this.type = type;
-    }
-
-    public void setLastMoveMade(String lastMoveMade)
-    {
-        this.lastMoveMade = lastMoveMade;
     }
 
     public void setMovesMade(int movesMade)

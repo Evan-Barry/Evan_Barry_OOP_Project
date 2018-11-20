@@ -60,10 +60,6 @@ public class GUI extends JFrame implements ActionListener{
         t2.setBackground(cPane.getBackground());
         t3.setBackground(cPane.getBackground());
 
-//        t1.setBackground(new Color(255,0,0));
-//        t2.setBackground(new Color(0,255,0));
-//        t3.setBackground(new Color(0,0,255));
-
         topPanel.add(t1);
         topPanel.add(t2);
         topPanel.add(t3);
@@ -75,10 +71,6 @@ public class GUI extends JFrame implements ActionListener{
         b1.setBackground(cPane.getBackground());
         b2.setBackground(cPane.getBackground());
         b3.setBackground(cPane.getBackground());
-
-//        b1.setBackground(new Color(255,255,0));
-//        b2.setBackground(new Color(0,255,255));
-//        b3.setBackground(new Color(255,0,255));
 
         bottomPanel.add(b1);
         bottomPanel.add(b2);
@@ -137,7 +129,6 @@ public class GUI extends JFrame implements ActionListener{
         {
             deck = setUpGame();
             deck.shuffle();
-            //displayHands(deck);
             displayHands(deck);
             addButtons();
         }
@@ -148,7 +139,6 @@ public class GUI extends JFrame implements ActionListener{
             surrenderButton.setEnabled(false);
 
             dealCard(cardArrayList, deck, human.getType());
-            human.setLastMoveMade("HIT");
             human.setMovesMade(human.getMovesMade()+1);
             System.out.println(human.getHand().toString());
             if(human.getHandValue() > 21)
@@ -162,7 +152,6 @@ public class GUI extends JFrame implements ActionListener{
             System.out.println("Player Stand");
             surrenderButton.setEnabled(false);
             hitButton.setEnabled(false);
-            human.setLastMoveMade("STAND");
             human.setMovesMade(human.getMovesMade()+1);
 
             if(!isDealerSecondCardFaceUp())
@@ -188,14 +177,12 @@ public class GUI extends JFrame implements ActionListener{
             while(blackjack.checkTotal(dealer.getHand(), dealer.getType()) < 17)
             {
                 dealCard(cardArrayList, deck, dealer.getType());
-                dealer.setLastMoveMade("HIT");
                 dealer.setMovesMade(dealer.getMovesMade()+1);
                 checkWinner(11);
             }
 
             if(blackjack.checkTotal(dealer.getHand(), dealer.getType()) >= 17)
             {
-                dealer.setLastMoveMade("STAND");
                 dealer.setHandValue(blackjack.checkTotal(dealer.getHand(), dealer.getType()));
                 dealer.setMovesMade(dealer.getMovesMade()+1);
                 hitButton.setEnabled(true);
@@ -205,7 +192,7 @@ public class GUI extends JFrame implements ActionListener{
 
         else if(e.getActionCommand().equals("Surrender"))
         {
-            JOptionPane.showMessageDialog(null, "Human Surrenders! Game Over!");
+            JOptionPane.showMessageDialog(null, human.getName() + " Surrenders! Game Over!", dealer.getName() + " Wins!", JOptionPane.INFORMATION_MESSAGE);
             surrenderButton.setEnabled(false);
             hitButton.setEnabled(false);
             standButton.setEnabled(false);
@@ -350,9 +337,6 @@ public class GUI extends JFrame implements ActionListener{
         d.removeCard();
 
         revalidate();
-        //repaint();
-
-
     }
 
     private void dealCard(Deck d, String cardName1)
