@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class GUI extends JFrame implements ActionListener{
@@ -133,6 +134,11 @@ public class GUI extends JFrame implements ActionListener{
             addButtons();
         }
 
+        else if(e.getActionCommand().equals("Stats"))
+        {
+            JOptionPane.showMessageDialog(null, "Stats Display Here", "Stats", JOptionPane.INFORMATION_MESSAGE);
+        }
+
         else if(e.getActionCommand().equals("Hit"))
         {
             System.out.println("Player Hit");
@@ -208,6 +214,11 @@ public class GUI extends JFrame implements ActionListener{
 
         item = new JMenuItem("New Game");
         item.setMnemonic(KeyEvent.VK_N);
+        item.addActionListener(this);
+        gameMenu.add(item);
+
+        item = new JMenuItem("Stats");
+        item.setMnemonic(KeyEvent.VK_S);
         item.addActionListener(this);
         gameMenu.add(item);
 

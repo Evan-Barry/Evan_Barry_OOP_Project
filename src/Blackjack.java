@@ -1,4 +1,8 @@
 import javax.swing.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class Blackjack implements EndGameConditions{
@@ -7,13 +11,15 @@ public class Blackjack implements EndGameConditions{
 
     private boolean gameOver;
 
-    private int numGamesPlayed;
+    private int[] gameStats = {1,2,3,4};
+
+    /*private int numGamesPlayed;
 
     private int numGamesWon;
 
     private int numGamesLost;
 
-    private int numGamesDrawn;
+    private int numGamesDrawn;*/
 
     public int getNumberOfDecks()
     {
@@ -35,7 +41,17 @@ public class Blackjack implements EndGameConditions{
         this.gameOver = gameOver;
     }
 
-    public int getNumGamesPlayed()
+    public int[] getGameStats()
+    {
+        return gameStats;
+    }
+
+    public void setGameStats(int[] gameStats)
+    {
+        this.gameStats = gameStats;
+    }
+
+    /*public int getNumGamesPlayed()
     {
         return numGamesPlayed;
     }
@@ -73,7 +89,7 @@ public class Blackjack implements EndGameConditions{
     public void setNumGamesDrawn(int numGamesDrawn)
     {
         this.numGamesDrawn = numGamesDrawn;
-    }
+    }*/
 
     public Blackjack(int numOfDecks)
     {
@@ -158,6 +174,20 @@ public class Blackjack implements EndGameConditions{
     public void draw()
     {
         JOptionPane.showMessageDialog(null, "Draw");
+    }
+
+    public void saveStatsToFile() throws IOException
+    {
+        File outFile = new File("stats.txt");
+        FileOutputStream outFileStream = new FileOutputStream(outFile);
+        PrintWriter outStream = new PrintWriter(outFileStream);
+
+        for(int i = 0; i < gameStats.length; i++)
+        {
+            outStream.println(gameStats[i]);
+        }
+
+        outStream.close();
     }
 
     public static void main(String[] args) {
