@@ -1,8 +1,5 @@
 import javax.swing.*;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.ArrayList;
 
 public class Blackjack implements EndGameConditions{
@@ -11,15 +8,7 @@ public class Blackjack implements EndGameConditions{
 
     private boolean gameOver;
 
-    private int[] gameStats = {1,2,3,4};
-
-    /*private int numGamesPlayed;
-
-    private int numGamesWon;
-
-    private int numGamesLost;
-
-    private int numGamesDrawn;*/
+    private int[] gameStats = {0,0,0,0};
 
     public int getNumberOfDecks()
     {
@@ -51,46 +40,6 @@ public class Blackjack implements EndGameConditions{
         this.gameStats = gameStats;
     }
 
-    /*public int getNumGamesPlayed()
-    {
-        return numGamesPlayed;
-    }
-
-    public int getNumGamesWon()
-    {
-        return numGamesWon;
-    }
-
-    public int getNumGamesLost()
-    {
-        return numGamesLost;
-    }
-
-    public int getNumGamesDrawn()
-    {
-        return numGamesDrawn;
-    }
-
-    public void setNumGamesPlayed(int numGamesPlayed)
-    {
-        this.numGamesPlayed = numGamesPlayed;
-    }
-
-    public void setNumGamesWon(int numGamesWon)
-    {
-        this.numGamesWon = numGamesWon;
-    }
-
-    public void setNumGamesLost(int numGamesLost)
-    {
-        this.numGamesLost = numGamesLost;
-    }
-
-    public void setNumGamesDrawn(int numGamesDrawn)
-    {
-        this.numGamesDrawn = numGamesDrawn;
-    }*/
-
     public Blackjack(int numOfDecks)
     {
         setNumberOfDecks(numOfDecks);
@@ -98,6 +47,12 @@ public class Blackjack implements EndGameConditions{
         Deck deck = new Deck(getNumberOfDecks());
 
         deck.shuffle();
+
+        try {
+            loadStatsFromFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public int checkTotal(ArrayList<Card> playerHand, String type)
@@ -164,21 +119,77 @@ public class Blackjack implements EndGameConditions{
     public void bust(Player loser, Player winner)
     {
         JOptionPane.showMessageDialog(null, loser.getName() + " has bust!", winner.getName() + " Wins!", JOptionPane.INFORMATION_MESSAGE);
+        int[] tempGameStats = getGameStats();
+        tempGameStats[0]++;//add 1 game played
+        if(winner.getType().equals("human"))
+        {
+            tempGameStats[1]++;//add 1 win
+        }
+        else
+        {
+            tempGameStats[2]++;//add 1 loss
+        }
+
+        setGameStats(tempGameStats);//update gameStats with new data
+
+        try
+        {
+            saveStatsToFile();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void winner(Player winner)
     {
         JOptionPane.showMessageDialog(null, winner.getName() + " wins with a total of: " + winner.getHandValue(), winner.getName() + " Wins!", JOptionPane.INFORMATION_MESSAGE);
+        int[] tempGameStats = getGameStats();
+        tempGameStats[0]++;//add 1 game played
+        if(winner.getType().equals("human"))
+        {
+            tempGameStats[1]++;//add 1 win
+        }
+        else
+        {
+            tempGameStats[2]++;//add 1 loss
+        }
+
+        setGameStats(tempGameStats);//update gameStats with new data
+
+        try
+        {
+            saveStatsToFile();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void draw()
     {
         JOptionPane.showMessageDialog(null, "Draw");
+        int[] tempGameStats = getGameStats();
+        tempGameStats[0]++;//add 1 game played
+        tempGameStats[3]++;//add 1 draw
+
+        setGameStats(tempGameStats);//update gameStats with new data
+
+        try
+        {
+            saveStatsToFile();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void saveStatsToFile() throws IOException
     {
-        File outFile = new File("stats.txt");
+        File outFile = new File("resources/stats.txt");
         FileOutputStream outFileStream = new FileOutputStream(outFile);
         PrintWriter outStream = new PrintWriter(outFileStream);
 
@@ -188,6 +199,26 @@ public class Blackjack implements EndGameConditions{
         }
 
         outStream.close();
+    }
+
+    public void loadStatsFromFile() throws IOException
+    {
+        File inFile = new File("resources/stats.txt");
+        FileReader fileReader = new FileReader(inFile);
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        String str;
+        int j;
+        int[] tempGameStats = new int[4];
+        for(int i = 0; i < gameStats.length; i++)
+        {
+            str = bufferedReader.readLine();
+            j = Integer.parseInt(str);
+            tempGameStats[i] = j;
+        }
+        bufferedReader.close();
+
+        setGameStats(tempGameStats);
+
     }
 
     public static void main(String[] args) {

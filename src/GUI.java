@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
 public class GUI extends JFrame implements ActionListener{
@@ -12,12 +13,14 @@ public class GUI extends JFrame implements ActionListener{
     private JLabel message;
     private JPanel t1;
     private JPanel t2;
+    private JPanel t3;
     private JPanel b1;
     private JPanel b2;
     private JPanel b3r1, b3r2, b3r3;
     private JLabel dealerSecondCardImageLabel;
     private static JButton hitButton, standButton, surrenderButton;
     private ImageIcon image;
+    private JMenuItem statsItem;
 
     private Deck deck;
     private ArrayList<Card> cardArrayList;
@@ -26,6 +29,8 @@ public class GUI extends JFrame implements ActionListener{
     private Player dealer = new Player("Casino", "dealer");
     private Blackjack blackjack;
     private boolean dealerSecondCardFaceUp = false;
+    private boolean buttonsEnabled = false;
+    private boolean gameRunning = false;
 
     GUI()
     {
@@ -55,7 +60,7 @@ public class GUI extends JFrame implements ActionListener{
 
         t1 = new JPanel();
         t2 = new JPanel();
-        JPanel t3 = new JPanel();
+        t3 = new JPanel();
 
         t1.setBackground(cPane.getBackground());
         t2.setBackground(cPane.getBackground());
@@ -116,6 +121,26 @@ public class GUI extends JFrame implements ActionListener{
         this.dealerSecondCardFaceUp = dealerSecondCardFaceUp;
     }
 
+    public boolean isButtonsEnabled()
+    {
+        return buttonsEnabled;
+    }
+
+    public void setButtonsEnabled(boolean buttonsEnabled)
+    {
+        this.buttonsEnabled = buttonsEnabled;
+    }
+
+    public boolean isGameRunning()
+    {
+        return gameRunning;
+    }
+
+    public void setGameRunning(boolean gameRunning)
+    {
+        this.gameRunning = gameRunning;
+    }
+
     @Override
     public void actionPerformed(ActionEvent e)
     {
@@ -128,15 +153,38 @@ public class GUI extends JFrame implements ActionListener{
 
         else if(e.getActionCommand().equals("New Game"))
         {
+            if(isGameRunning())
+            {
+                clearPanels();
+
+                human = null;
+                dealer = null;
+
+                human = new Player("Unknown", "human");
+                dealer = new Player("Casino", "dealer");
+
+                deck = null;
+
+                setDealerSecondCardFaceUp(false);
+            }
+
             deck = setUpGame();
             deck.shuffle();
             displayHands(deck);
             addButtons();
+            statsItem.setEnabled(true);
+            setGameRunning(true);
+
+            revalidate();
         }
 
         else if(e.getActionCommand().equals("Stats"))
         {
-            JOptionPane.showMessageDialog(null, "Stats Display Here", "Stats", JOptionPane.INFORMATION_MESSAGE);
+            int[] gameStats = blackjack.getGameStats();
+
+            String statsFormatted = String.format("%-20s%d\n%-20s%d\n%-20s%d\n%-20s%d","Games Played:", gameStats[0],"Games Won:", gameStats[1],"Games Lost:", gameStats[2],"Games Drawn:", gameStats[3]);
+
+            JOptionPane.showMessageDialog(null, statsFormatted, "Stats", JOptionPane.INFORMATION_MESSAGE);
         }
 
         else if(e.getActionCommand().equals("Hit"))
@@ -150,7 +198,10 @@ public class GUI extends JFrame implements ActionListener{
             if(human.getHandValue() > 21)
             {
                 checkWinner(0);
+                disableButtons();
             }
+
+            revalidate();
         }
 
         else if(e.getActionCommand().equals("Stand"))
@@ -184,6 +235,7 @@ public class GUI extends JFrame implements ActionListener{
             {
                 dealCard(cardArrayList, deck, dealer.getType());
                 dealer.setMovesMade(dealer.getMovesMade()+1);
+                revalidate();
                 checkWinner(11);
             }
 
@@ -191,7 +243,8 @@ public class GUI extends JFrame implements ActionListener{
             {
                 dealer.setHandValue(blackjack.checkTotal(dealer.getHand(), dealer.getType()));
                 dealer.setMovesMade(dealer.getMovesMade()+1);
-                hitButton.setEnabled(true);
+                revalidate();
+                //setEnabled(true);
                 checkWinner(12);
             }
         }
@@ -211,16 +264,18 @@ public class GUI extends JFrame implements ActionListener{
         JMenuItem item;
 
         gameMenu = new JMenu("Game");
+        gameMenu.setMnemonic(KeyEvent.VK_G);
 
         item = new JMenuItem("New Game");
         item.setMnemonic(KeyEvent.VK_N);
         item.addActionListener(this);
         gameMenu.add(item);
 
-        item = new JMenuItem("Stats");
-        item.setMnemonic(KeyEvent.VK_S);
-        item.addActionListener(this);
-        gameMenu.add(item);
+        statsItem = new JMenuItem("Stats");
+        statsItem.setMnemonic(KeyEvent.VK_S);
+        statsItem.addActionListener(this);
+        statsItem.setEnabled(false);
+        gameMenu.add(statsItem);
 
         gameMenu.addSeparator();
 
@@ -234,7 +289,16 @@ public class GUI extends JFrame implements ActionListener{
     {
         String name = JOptionPane.showInputDialog("What is your name?");
         human.setName(name);
+
         int numberOfDecks = Integer.parseInt(JOptionPane.showInputDialog("How many decks do you want to play with? (1(Easy) - 4(Very Hard))"));
+
+        while(numberOfDecks < 1 || numberOfDecks > 4)
+        {
+            JOptionPane.showMessageDialog(null, "Input was not between 1 and 4", "Error", JOptionPane.ERROR_MESSAGE);
+            numberOfDecks = Integer.parseInt(JOptionPane.showInputDialog("How many decks do you want to play with? (1(Easy) - 4(Very Hard))"));
+        }
+
+
         deck = new Deck(numberOfDecks);
 
         message.setText(dealer.getName());
@@ -260,7 +324,7 @@ public class GUI extends JFrame implements ActionListener{
 
     private void displayHands(Deck d)
     {
-        System.out.println(d.toString());
+        //System.out.println(d.toString());
 
         cardArrayList = d.getCards();
 
@@ -314,13 +378,21 @@ public class GUI extends JFrame implements ActionListener{
         surrenderButton.setVisible(true);
         surrenderButton.addActionListener(this);
         b3r3.add(surrenderButton);
+
+        setButtonsEnabled(true);
     }
 
-    private static void disableButtons()
+    private void disableButtons()
     {
-        hitButton.setEnabled(false);
-        standButton.setEnabled(false);
-        surrenderButton.setEnabled(false);
+        if(isButtonsEnabled())
+        {
+            hitButton.setEnabled(false);
+            standButton.setEnabled(false);
+            surrenderButton.setEnabled(false);
+
+            setButtonsEnabled(false);
+        }
+
     }
 
     private void dealCard(ArrayList<Card> cardArrayList, Deck d, String playerType)
@@ -346,8 +418,6 @@ public class GUI extends JFrame implements ActionListener{
             dealer.setHandValue(blackjack.checkTotal(dealer.getHand(), dealer.getType()));
         }
         d.removeCard();
-
-        revalidate();
     }
 
     private void dealCard(Deck d, String cardName1)
@@ -413,6 +483,33 @@ public class GUI extends JFrame implements ActionListener{
             disableButtons();
         }
 
+    }
+
+    public void clearPanels()
+    {
+        t1.removeAll();
+        t1.updateUI();
+
+        t2.removeAll();
+        t2.updateUI();
+
+        t3.removeAll();
+        t3.updateUI();
+
+        b1.removeAll();
+        b1.updateUI();
+
+        b2.removeAll();
+        b2.updateUI();
+
+        b3r1.removeAll();
+        b3r1.updateUI();
+
+        b3r2.removeAll();
+        b3r2.updateUI();
+
+        b3r3.removeAll();
+        b3r3.updateUI();
     }
 
 }
