@@ -4,7 +4,6 @@ import java.util.ArrayList;
 public class Deck {
 
     private ArrayList<Card> cards = new ArrayList<>();// New array list of cards, the deck
-    private int availableCards;
     private boolean shuffled;
 
     public ArrayList<Card> getCards()
@@ -12,20 +11,12 @@ public class Deck {
         return cards;
     }
 
-    public int getAvailableCards()
-    {
-        return availableCards;
-    }
 
     public boolean isShuffled()
     {
         return shuffled;
     }
 
-    public void setAvailableCards(int availableCards)
-    {
-        this.availableCards = availableCards;
-    }
 
     public void setCards(ArrayList<Card> cards)
     {
@@ -39,7 +30,6 @@ public class Deck {
 
     public Deck(int numberOfDecks)
     {
-        setAvailableCards(52 * numberOfDecks);
         setShuffled(false);
 
         for(int x = 0; x < numberOfDecks; x++)
