@@ -1,8 +1,14 @@
+import javafx.application.Application;
+import javafx.embed.swing.JFXPanel;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -39,6 +45,10 @@ public class GUI extends JFrame implements ActionListener{
     private boolean dealerSecondCardFaceUp = false;
     private boolean buttonsEnabled = false;
     private boolean gameRunning = false;
+
+    static MediaPlayer mediaPlayer;
+    String audioFile1 = "resources/gunshot.wav";
+
 
     GUI()
     {
@@ -139,6 +149,8 @@ public class GUI extends JFrame implements ActionListener{
 
         //Assign the exit button on the window to close the program
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+        JFXPanel jfxPanel = new JFXPanel();
     }
 
     //Accessor and Mutator methods for the attributes
@@ -497,6 +509,9 @@ public class GUI extends JFrame implements ActionListener{
             dealer.hit(cardArrayList.get(0));//Call the dealer's hit method and pass through the card on top of the deck
             dealer.setHandValue(blackjack.checkTotal(dealer.getHand(), dealer.getType()));//Update the player's hand value with the card just dealt
         }
+
+        playAudio(audioFile1);
+
         d.removeCard();//Remove the card from the top of deck
     }
 
@@ -513,55 +528,65 @@ public class GUI extends JFrame implements ActionListener{
         dealer.hit(cardArrayList.get(0));//Call the dealer's hit method and pass through the card on top of the deck
         blackjack.checkTotal(dealer.getHand(), dealer.getType());//Check the total of the dealer's hand
         d.removeCard();//Remove the card from the top of the deck
+
+        playAudio(audioFile1);
     }
 
+    //This method will compare the players' hands to check if a player has bust, if a player has 21 or a player has a higher value hand than the other player
     private void checkWinner()
     {
+        //If the human player's hand value is 21 after the initial deal and the dealer does not have 21 as well and the game is not over
         if(human.getHandValue() == 21 && human.getMovesMade() == 0 && dealer.getHandValue() != 21 && !blackjack.isGameOver())
         {
+            //Display a message saying the human wins with a Blackjack hand
             JOptionPane.showMessageDialog(null, "Blackjack! " + human.getName() + " Wins!", "Blackjack!", JOptionPane.INFORMATION_MESSAGE);
-            blackjack.setGameOver(true);
+            blackjack.setGameOver(true);//Set the game to be over
         }
 
-        System.out.println("Checking winner" + "\nhuman hand value - " + human.getHandValue()+ "\ndealer hand value - " + dealer.getHandValue());
-
+        //If the human has more than 21 and the game is not over
         if(human.getHandValue() > 21 && !blackjack.isGameOver())
         {
-            blackjack.bust(human, dealer);
-            blackjack.setGameOver(true);
+            blackjack.bust(human, dealer);//Call the bust method of Blackjack and pass the human in as the loser(player who bust) and the dealer as the winner
+            blackjack.setGameOver(true);//Set the game to be over
         }
 
+        //If the dealer has more than 21 and the game is not over
         else if(dealer.getHandValue() > 21 && !blackjack.isGameOver())
         {
-            blackjack.bust(dealer, human);
-            blackjack.setGameOver(true);
+            blackjack.bust(dealer, human);//Call the bust method of Blackjack and pass the dealer in as the loser(player who bust) and the human as the winner
+            blackjack.setGameOver(true);//Set the game to be over
         }
 
+        //if the human's hand value is greater than the dealer's hand value and the game is not over
         else if(human.getHandValue() > dealer.getHandValue() && !blackjack.isGameOver())
         {
-            blackjack.winner(human);
-            blackjack.setGameOver(true);
+            blackjack.winner(human);//Call the winner method of Blackjack and pass the human in as the winner
+            blackjack.setGameOver(true);//Set the game to be over
         }
 
+        //if the dealer's hand value is greater than the human's hand value and the game is not over
         else if(dealer.getHandValue() > human.getHandValue() && !blackjack.isGameOver())
         {
-            blackjack.winner(dealer);
-            blackjack.setGameOver(true);
+            blackjack.winner(dealer);//Call the winner method of Blackjack and pass the dealer in as the winner
+            blackjack.setGameOver(true);//Set the game to be over
         }
 
+        //If the human and the dealer have the same hand value and the game is not over
         else if(human.getHandValue() == dealer.getHandValue() && !blackjack.isGameOver())
         {
-            blackjack.draw();
-            blackjack.setGameOver(true);
+            blackjack.draw();//Call the draw method of Blackjack
+            blackjack.setGameOver(true);//Set the game to be over
         }
 
+        //If the game is over
         if(blackjack.isGameOver())
         {
-            disableButtons();
+            disableButtons();//Disable the buttons
         }
 
     }
 
+    //This method will clear all the panels of their elements and update the panels
     public void clearPanels()
     {
         t1.removeAll();
@@ -587,6 +612,22 @@ public class GUI extends JFrame implements ActionListener{
 
         b3r3.removeAll();
         b3r3.updateUI();
+    }
+
+    public static void playAudio(String path)
+    {
+        Media audioClip = new Media(new File(path).toURI().toString());
+
+        mediaPlayer = new MediaPlayer(audioClip);
+
+        try
+        {
+            mediaPlayer.play();
+        }
+        catch(Exception e)
+        {
+            System.out.println("The audio file " + path + " could not be played!");
+        }
     }
 
 }

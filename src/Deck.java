@@ -1,33 +1,61 @@
 import java.util.Random;
 import java.util.ArrayList;
 
+/**
+ * Represents a deck of cards
+ */
 public class Deck {
 
+    /**
+     * The array holding the card, the deck
+     */
     private ArrayList<Card> cards = new ArrayList<>();// New array list of cards, the deck
-    private boolean shuffled;
 
+    /**
+     * Indicates if the deck is shuffled
+     */
+    private boolean shuffled = false;
+
+    /**
+     * Gets the array list of cards
+     * @return the deck of cards
+     */
     public ArrayList<Card> getCards()
     {
         return cards;
     }
 
-
+    /**
+     * Gets the shuffled state of the deck
+     * @return the shuffled status
+     */
     public boolean isShuffled()
     {
         return shuffled;
     }
 
-
+    /**
+     * Changes the cards of the deck
+     * @param cards
+     */
     public void setCards(ArrayList<Card> cards)
     {
         this.cards = cards;
     }
 
+    /**
+     * Changes the shuffles state of the deck
+     * @param shuffled
+     */
     public void setShuffled(boolean shuffled)
     {
         this.shuffled = shuffled;
     }
 
+    /**
+     * Creates a new deck with the given number of decks the new deck will be comprised of
+     * @param numberOfDecks
+     */
     public Deck(int numberOfDecks)
     {
         setShuffled(false);
@@ -44,6 +72,10 @@ public class Deck {
         }
     }
 
+    /**
+     * Lists out all the cards in the deck
+     * @return An output of all the cards
+     */
     public String toString()
     {
         String output = "";
@@ -56,6 +88,9 @@ public class Deck {
         return output;
     }
 
+    /**
+     * Takes the deck and shuffles it and sets the shuffles state of the deck to true
+     */
     public void shuffle()
     {
         Random rnd = new Random();
@@ -71,6 +106,9 @@ public class Deck {
         setShuffled(true);
     }
 
+    /**
+     * Removes the top card of the deck. Top card is card at element 0
+     */
     public void removeCard()
     {
         cards.remove(0);

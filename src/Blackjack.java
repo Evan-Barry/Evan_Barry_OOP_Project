@@ -113,8 +113,6 @@ public class Blackjack implements EndGameConditions{
             }
 
             total += value;
-
-            System.out.println(total + " " + type + " i count : " + i);
         }
 
         return total;//The total is returned
@@ -208,20 +206,24 @@ public class Blackjack implements EndGameConditions{
     public void loadStatsFromFile() throws IOException
     {
         File inFile = new File("resources/stats.txt");//The File to load in from
-        FileReader fileReader = new FileReader(inFile);//FileReader will make it possible to read contents from a file
-        BufferedReader bufferedReader = new BufferedReader(fileReader);//BufferedReader will read data from a character stream, fileReader
-        String str;//Declaring a string to store each line a of data from the file
-        int j;//Declaring an int to store a number that will be parsed from a string
-        int[] tempGameStats = new int[4];//Declaring a temp array to store game stats
-        for(int i = 0; i < gameStats.length; i++)//For loop to cycle through the main gameStats array
-        {
-            str = bufferedReader.readLine();//Store the current line from the file in the String str
-            j = Integer.parseInt(str);//Parse the String str to the Int j
-            tempGameStats[i] = j;//Set the current index of tempGameStats to the value of j
-        }
-        bufferedReader.close();//Close the buffered reader
 
-        setGameStats(tempGameStats);//Set the gameStats array to the value of the tempGameStats array
+        if(inFile.exists())//https://docs.oracle.com/javase/7/docs/api/java/io/File.html#exists()
+        {
+            FileReader fileReader = new FileReader(inFile);//FileReader will make it possible to read contents from a file
+            BufferedReader bufferedReader = new BufferedReader(fileReader);//BufferedReader will read data from a character stream, fileReader
+            String str;//Declaring a string to store each line a of data from the file
+            int j;//Declaring an int to store a number that will be parsed from a string
+            int[] tempGameStats = new int[4];//Declaring a temp array to store game stats
+            for(int i = 0; i < gameStats.length; i++)//For loop to cycle through the main gameStats array
+            {
+                str = bufferedReader.readLine();//Store the current line from the file in the String str
+                j = Integer.parseInt(str);//Parse the String str to the Int j
+                tempGameStats[i] = j;//Set the current index of tempGameStats to the value of j
+            }
+            bufferedReader.close();//Close the buffered reader
+
+            setGameStats(tempGameStats);//Set the gameStats array to the value of the tempGameStats array
+        }
 
     }
 

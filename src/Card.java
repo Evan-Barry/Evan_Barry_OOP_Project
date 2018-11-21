@@ -1,33 +1,67 @@
+/**
+ * Represents a Card
+ */
 public class Card {
 
+    /**
+     * The suit of the card
+     */
     private String suit;
+    /**
+     * The number value of the card
+     */
     private String value;
 
+    /**
+     * Gets the suit of this card
+     * @return this card's suit
+     */
     public String getSuit()
     {
         return suit;
     }
 
+    /**
+     * Gets the number value of this card
+     * @return this card's value
+     */
     public String getValue()
     {
         return value;
     }
 
+    /**
+     * Changes the suit of this card
+     * @param suit This card's new suit
+     */
     public void setSuit(String suit)
     {
         this.suit = suit;
     }
 
+    /**
+     * Changes the value of this card
+     * @param value This card's new value
+     */
     public void setValue(String value)
     {
         this.value = value;
     }
 
+    /**
+     * Returns a string containing the value and suit of this card
+     * @return The string form of this card's name
+     */
     public String toString()
     {
         return getValue() + " of " + getSuit();
     }
 
+    /**
+     * Creates a new Card with the given suit and value
+     * @param suit This card's suit
+     * @param value This card's value
+     */
     public Card(int suit, int value)
     {
         switch (suit)
