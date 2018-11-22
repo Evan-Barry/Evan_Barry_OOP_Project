@@ -46,8 +46,10 @@ public class GUI extends JFrame implements ActionListener{
     private boolean buttonsEnabled = false;
     private boolean gameRunning = false;
 
+    //.wav files found on https://opengameart.org/content/54-casino-sound-effects-cards-dice-chips
     static MediaPlayer mediaPlayer;
-    String audioFile1 = "resources/gunshot.wav";
+    String dealCardWav = "resources/cardDeal1.wav";
+    String fanCardWav = "resources/cardFan1.wav";
 
 
     GUI()
@@ -224,6 +226,7 @@ public class GUI extends JFrame implements ActionListener{
             statsItem.setEnabled(true);//Enable the stats menu item
             setGameRunning(true);//Indicate that a game is running
 
+            //https://docs.oracle.com/javase/7/docs/api/java/awt/Component.html#revalidate()
             revalidate();//Update the JPanel's to show changes in its elements
         }
 
@@ -248,6 +251,7 @@ public class GUI extends JFrame implements ActionListener{
 
             //Call method that will deal the next card from the deck to the human player
             dealCard(cardArrayList, deck, human.getType());
+            playAudio(dealCardWav);
             human.setMovesMade(human.getMovesMade()+1);//Increment the amount of moves the human has made
 
             //If the human player is bust
@@ -276,7 +280,7 @@ public class GUI extends JFrame implements ActionListener{
 
                 //Update the JPanel's to show changes in its elements
                 revalidate();
-                repaint();
+                repaint();//https://docs.oracle.com/javase/7/docs/api/java/awt/Component.html#repaint()
 
                 //Creating a string that holds the file name of the card. The card file name is made of the card
                 String cardName = dealer.getHand().get(1).getValue() + dealer.getHand().get(1).getSuit();
@@ -303,6 +307,7 @@ public class GUI extends JFrame implements ActionListener{
             while(blackjack.checkTotal(dealer.getHand(), dealer.getType()) < 17)
             {
                 dealCard(cardArrayList, deck, dealer.getType());//Call the method to deal a new card to the dealer
+                playAudio(dealCardWav);
                 dealer.setMovesMade(dealer.getMovesMade()+1);//Increment the amount of moves made by the dealer
                 revalidate();//Update the JPanel's to show changes in its elements
                 checkWinner();//Call the checkWinner method
@@ -367,15 +372,50 @@ public class GUI extends JFrame implements ActionListener{
         String name = JOptionPane.showInputDialog("What is your name?");
         human.setName(name);
 
-        //Asking the user how many decks they want to play with
-        int numberOfDecks = Integer.parseInt(JOptionPane.showInputDialog("How many decks do you want to play with? (1(Easy) - 4(Very Hard))"));
+        String numberOfDecksAsString;//To store the number of decks as a string from the input dialog
+        int numberOfDecks = 0;//The number of decks as an integer, initialised to 0
+        boolean validInput;//True if input is 1,2,3 or 4
+        int i;//counter variable to cycle through input
 
-        //Keeping asking until the user input a valid number
-        while(numberOfDecks < 1 || numberOfDecks > 4)
+        //Asking the user how many decks they want to play with
+        numberOfDecksAsString = JOptionPane.showInputDialog("How many decks do you want to play with? (1(Easy) - 4(Very Hard))");
+
+        validInput = false;
+
+        while(!validInput)
         {
-            JOptionPane.showMessageDialog(null, "Input was not between 1 and 4", "Error", JOptionPane.ERROR_MESSAGE);
-            numberOfDecks = Integer.parseInt(JOptionPane.showInputDialog("How many decks do you want to play with? (1(Easy) - 4(Very Hard))"));
+            for(i = 0; i < numberOfDecksAsString.length();i++)
+            {
+                if(!Character.isDigit(numberOfDecksAsString.charAt(i)))
+                {
+                    break;
+                }
+            }
+
+            if(i == numberOfDecksAsString.length())
+            {
+                numberOfDecks = Integer.parseInt(numberOfDecksAsString);
+
+                if(numberOfDecks >=1 && numberOfDecks <= 4)
+                {
+                    validInput = true;
+                }
+
+                else
+                {
+                    JOptionPane.showMessageDialog(null, "Input was not between 1 and 4", "Error", JOptionPane.ERROR_MESSAGE);
+                    numberOfDecksAsString = JOptionPane.showInputDialog("How many decks do you want to play with? (1(Easy) - 4(Very Hard))");
+                }
+            }
+
+            else
+            {
+                JOptionPane.showMessageDialog(null, "Input was not between 1 and 4", "Error", JOptionPane.ERROR_MESSAGE);
+                numberOfDecksAsString = JOptionPane.showInputDialog("How many decks do you want to play with? (1(Easy) - 4(Very Hard))");
+            }
         }
+
+        playAudio(fanCardWav);
 
         //Creating a new deck with the amount of decks given my the user
         deck = new Deck(numberOfDecks);
@@ -510,8 +550,6 @@ public class GUI extends JFrame implements ActionListener{
             dealer.setHandValue(blackjack.checkTotal(dealer.getHand(), dealer.getType()));//Update the player's hand value with the card just dealt
         }
 
-        playAudio(audioFile1);
-
         d.removeCard();//Remove the card from the top of deck
     }
 
@@ -528,8 +566,6 @@ public class GUI extends JFrame implements ActionListener{
         dealer.hit(cardArrayList.get(0));//Call the dealer's hit method and pass through the card on top of the deck
         blackjack.checkTotal(dealer.getHand(), dealer.getType());//Check the total of the dealer's hand
         d.removeCard();//Remove the card from the top of the deck
-
-        playAudio(audioFile1);
     }
 
     //This method will compare the players' hands to check if a player has bust, if a player has 21 or a player has a higher value hand than the other player
