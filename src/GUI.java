@@ -310,7 +310,6 @@ public class GUI extends JFrame implements ActionListener{
                 playAudio(dealCardWav);
                 dealer.setMovesMade(dealer.getMovesMade()+1);//Increment the amount of moves made by the dealer
                 revalidate();//Update the JPanel's to show changes in its elements
-                checkWinner();//Call the checkWinner method
             }
 
             //The dealer will stand if its total is greater or equal to 17
